@@ -3,239 +3,415 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Расписание БНТУ</title>
+<title>БНТУ · Расписание</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f0f13;
-    --card: #1a1a22;
-    --card2: #22222e;
-    --accent: #5e9fff;
-    --green: #4cd97b;
-    --red: #ff5e5e;
-    --purple: #a78bfa;
-    --text: #f0f0f5;
-    --muted: #7a7a9a;
-    --border: #2e2e3e;
-    --pill-bg: #252530;
+    --bg:       #050d1a;
+    --bg2:      #071224;
+    --bg3:      #0a1a32;
+    --card:     rgba(10,25,50,0.75);
+    --card2:    rgba(5,18,38,0.9);
+    --cyan:     #00e5c8;
+    --cyan2:    #00c4ab;
+    --cyan-dim: rgba(0,229,200,0.12);
+    --cyan-glow:rgba(0,229,200,0.25);
+    --teal:     #0affdc;
+    --text:     #e8f4f2;
+    --text2:    #7db8b0;
+    --text3:    #3d7a72;
+    --border:   rgba(0,229,200,0.15);
+    --border2:  rgba(0,229,200,0.08);
+    --green:    #00ff88;
+    --green-dim:rgba(0,255,136,0.12);
+    --orange:   #ff9d3d;
+    --orange-dim:rgba(255,157,61,0.12);
+    --purple:   #a78bfa;
+    --purple-dim:rgba(167,139,250,0.12);
+    --red:      #ff5e7d;
+    --red-dim:  rgba(255,94,125,0.12);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+  html { scroll-behavior:smooth; }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Exo 2', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
   }
 
-  /* ── HEADER ── */
+  /* ─── ANIMATED BG ─── */
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 80% 20%, rgba(0,229,200,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 10% 80%, rgba(0,180,160,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,229,200,0.03) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  /* Grid lines bg */
+  body::after {
+    content:'';
+    position:fixed; inset:0; z-index:0;
+    background-image:
+      linear-gradient(rgba(0,229,200,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,200,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events:none;
+  }
+
+  .z1 { position:relative; z-index:1; }
+
+  /* ─── HEADER ─── */
   .header {
-    position: sticky; top: 0; z-index: 10;
-    background: var(--bg);
+    position:sticky; top:0; z-index:30;
+    background: rgba(5,13,26,0.88);
+    backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
-    padding: 12px 16px 10px;
+    padding: 12px 16px 0;
   }
-  .header-top {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+
+  .header-row {
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:12px;
   }
+
   .logo {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: linear-gradient(135deg, #1e3a5f, #2d5a9e);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-  .header-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
-  .week-badge {
-    margin-left: auto;
-    background: var(--pill-bg); border: 1px solid var(--border);
-    border-radius: 20px; padding: 4px 12px;
-    font-size: 12px; color: var(--muted); white-space: nowrap;
-  }
-  .week-badge b { color: var(--accent); }
-
-  /* ── WEEK TABS ── */
-  .week-tabs {
-    display: flex; gap: 6px;
-  }
-  .week-tab {
-    flex: 1; padding: 7px 0; border-radius: 10px;
-    border: 1px solid var(--border); background: var(--pill-bg);
-    color: var(--muted); font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all .18s; text-align: center;
-  }
-  .week-tab.active {
-    background: var(--accent); border-color: var(--accent);
-    color: #fff;
+    width:36px; height:36px; flex-shrink:0;
+    background: linear-gradient(135deg, var(--cyan) 0%, #00b8a0 100%);
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px;
+    box-shadow: 0 0 16px rgba(0,229,200,0.5), 0 0 40px rgba(0,229,200,0.2);
   }
 
-  /* ── DAY TABS ── */
-  .day-scroll {
-    display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px;
-    scrollbar-width: none;
-  }
-  .day-scroll::-webkit-scrollbar { display: none; }
-  .day-tab {
-    flex-shrink: 0; padding: 6px 14px; border-radius: 20px;
-    border: 1px solid var(--border); background: var(--pill-bg);
-    color: var(--muted); font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: all .18s; white-space: nowrap;
-  }
-  .day-tab.active {
-    background: var(--card2); border-color: var(--accent);
-    color: var(--text);
-  }
-  .day-tab.today-mark {
-    border-color: var(--green);
-    color: var(--green);
-  }
-  .day-tab.today-mark.active {
-    background: rgba(76,217,123,.15);
+  .header-info { flex:1; }
+
+  .header-title {
+    font-family:'Orbitron', sans-serif;
+    font-size:15px; font-weight:700;
+    letter-spacing:.5px;
+    background: linear-gradient(90deg, var(--text) 30%, var(--cyan));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   }
 
-  /* ── CONTENT ── */
-  .content { padding: 4px 16px 80px; }
+  .header-sub { font-size:10px; color:var(--text3); font-weight:500; margin-top:1px; letter-spacing:.3px; }
 
-  /* ── DAY HEADER ── */
-  .day-header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 14px 0 10px;
-  }
-  .day-header-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--accent); flex-shrink: 0;
-  }
-  .day-header-dot.green { background: var(--green); }
-  .day-name { font-size: 19px; font-weight: 700; }
-  .day-meta { font-size: 12px; color: var(--muted); margin-top: 1px; }
-  .no-lessons {
-    margin-top: 20px;
-    background: var(--card); border-radius: 16px; padding: 30px 20px;
-    text-align: center;
-  }
-  .no-lessons .emoji { font-size: 40px; margin-bottom: 10px; }
-  .no-lessons p { color: var(--muted); font-size: 15px; }
-
-  /* ── LESSON CARD ── */
-  .lesson-card {
-    background: var(--card); border-radius: 16px;
-    margin-bottom: 10px; overflow: hidden;
+  .week-pill {
+    font-family:'Orbitron', sans-serif;
+    font-size:10px; font-weight:700; letter-spacing:.5px;
+    color: var(--cyan);
+    background: var(--cyan-dim);
     border: 1px solid var(--border);
-    transition: transform .12s;
+    padding:5px 12px; border-radius:20px;
+    box-shadow: 0 0 12px var(--cyan-glow);
+    flex-shrink:0;
   }
-  .lesson-card:active { transform: scale(0.985); }
-  .lesson-top {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px 14px 10px;
-  }
-  .lesson-icon {
-    width: 42px; height: 42px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; flex-shrink: 0;
-    background: rgba(94,159,255,.12);
-  }
-  .lesson-icon.green-bg { background: rgba(76,217,123,.12); }
-  .lesson-icon.purple-bg { background: rgba(167,139,250,.12); }
-  .lesson-icon.orange-bg { background: rgba(255,165,80,.12); }
-  .lesson-icon.red-bg { background: rgba(255,94,94,.12); }
-  .lesson-num {
-    position: absolute; top: -2px; left: -2px;
-    background: var(--accent); color: #fff;
-    width: 18px; height: 18px; border-radius: 6px;
-    font-size: 10px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .lesson-icon-wrap { position: relative; flex-shrink: 0; }
-  .lesson-info { flex: 1; min-width: 0; }
-  .lesson-name {
-    font-size: 14px; font-weight: 600; line-height: 1.3;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .lesson-type {
-    font-size: 11px; color: var(--muted); margin-top: 2px;
-  }
-  .lesson-time {
-    font-size: 13px; font-weight: 700; color: var(--accent);
-    white-space: nowrap; flex-shrink: 0;
-  }
-  .lesson-divider {
-    height: 1px; background: var(--border); margin: 0 14px;
-  }
-  .lesson-bottom {
-    padding: 9px 14px 12px;
-    display: flex; flex-direction: column; gap: 5px;
-  }
-  .lesson-detail {
-    display: flex; align-items: flex-start; gap: 7px;
-    font-size: 12px; color: var(--muted);
-  }
-  .lesson-detail .d-icon { font-size: 13px; flex-shrink: 0; margin-top: 0; }
-  .lesson-detail span { line-height: 1.4; }
 
-  /* ── CURRENT LESSON highlight ── */
+  /* Week tabs */
+  .week-tabs { display:flex; gap:0; }
+
+  .week-tab {
+    flex:1; padding:9px 0 10px;
+    border:none; background:transparent;
+    color:var(--text3); font-size:12px; font-weight:700;
+    cursor:pointer; position:relative;
+    transition:color .2s; font-family:'Exo 2', sans-serif;
+    letter-spacing:.3px;
+  }
+
+  .week-tab::after {
+    content:'';
+    position:absolute; bottom:0; left:25%; right:25%;
+    height:2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    border-radius:2px 2px 0 0;
+    transform:scaleX(0);
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  .week-tab.active { color:var(--cyan); }
+  .week-tab.active::after { transform:scaleX(1); }
+
+  /* ─── TODAY BANNER ─── */
+  #todayBanner { padding:0 16px; margin-top:12px; }
+
+  .today-banner {
+    border-radius:16px;
+    padding:16px;
+    display:flex; align-items:center; gap:14px;
+    position:relative; overflow:hidden;
+    background: linear-gradient(135deg, rgba(0,30,55,0.95) 0%, rgba(0,20,40,0.95) 100%);
+    border: 1px solid rgba(0,229,200,0.3);
+    box-shadow: 0 0 30px rgba(0,229,200,0.15), inset 0 1px 0 rgba(0,229,200,0.1);
+    animation: bannerIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+
+  .today-banner::before {
+    content:'';
+    position:absolute; top:-40%; right:-10%;
+    width:200px; height:200px;
+    background: radial-gradient(circle, rgba(0,229,200,0.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  @keyframes bannerIn {
+    from { opacity:0; transform:translateY(-10px) scale(.97); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  .banner-icon {
+    width:46px; height:46px; flex-shrink:0;
+    background: var(--cyan-dim);
+    border: 1px solid var(--border);
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px;
+    box-shadow: 0 0 16px var(--cyan-glow);
+  }
+
+  .banner-text { flex:1; }
+  .banner-label { font-size:10px; font-weight:700; color:var(--cyan); letter-spacing:.8px; text-transform:uppercase; }
+  .banner-day { font-family:'Orbitron',sans-serif; font-size:17px; font-weight:700; color:var(--text); letter-spacing:.3px; margin-top:3px; }
+  .banner-meta { font-size:11px; color:var(--text2); font-weight:500; margin-top:3px; }
+
+  .banner-clock-wrap { text-align:right; flex-shrink:0; }
+  .banner-clock { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:700; color:var(--cyan); letter-spacing:1px; text-shadow:0 0 12px var(--cyan); }
+  .banner-date { font-size:10px; color:var(--text3); font-weight:500; margin-top:3px; letter-spacing:.3px; }
+
+  /* ─── DAY SCROLL ─── */
+  .day-scroll {
+    display:flex; gap:7px; overflow-x:auto;
+    padding:12px 16px 0; scrollbar-width:none; scroll-behavior:smooth;
+  }
+  .day-scroll::-webkit-scrollbar { display:none; }
+
+  .day-tab {
+    flex-shrink:0; padding:7px 14px;
+    border-radius:10px;
+    border: 1px solid var(--border2);
+    background: rgba(10,25,50,0.5);
+    color:var(--text2); font-size:12px; font-weight:700;
+    cursor:pointer; transition:all .2s;
+    font-family:'Exo 2',sans-serif; letter-spacing:.2px;
+    backdrop-filter: blur(8px);
+  }
+
+  .day-tab.active {
+    background: var(--cyan-dim);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 16px var(--cyan-glow), inset 0 0 12px rgba(0,229,200,0.05);
+  }
+
+  .day-tab.today-mark {
+    border-color: rgba(0,255,136,0.3);
+    color: var(--green);
+    background: var(--green-dim);
+  }
+
+  .day-tab.active.today-mark {
+    box-shadow: 0 0 16px rgba(0,255,136,0.3);
+  }
+
+  .day-tab:active { transform:scale(.9); }
+
+  /* ─── CONTENT ─── */
+  .content { padding:10px 16px 100px; }
+
+  /* Section head */
+  .section-head {
+    display:flex; align-items:center; gap:8px;
+    padding:16px 0 12px;
+  }
+  .sh-line { flex:1; height:1px; background: linear-gradient(90deg, var(--border2), var(--border), var(--border2)); }
+  .sh-label { font-size:10px; font-weight:700; color:var(--text3); letter-spacing:.8px; text-transform:uppercase; white-space:nowrap; }
+  .sh-count {
+    font-size:10px; font-weight:800; color:var(--cyan);
+    background:var(--cyan-dim); border:1px solid var(--border);
+    padding:2px 8px; border-radius:10px; letter-spacing:.3px;
+  }
+
+  /* ─── EMPTY STATE ─── */
+  .empty {
+    background: var(--card);
+    border:1px dashed var(--border);
+    border-radius:16px;
+    padding:44px 20px; text-align:center;
+    backdrop-filter:blur(8px);
+  }
+  .empty .big { font-size:44px; margin-bottom:12px; }
+  .empty p { font-size:15px; font-weight:700; color:var(--text2); }
+  .empty small { font-size:11px; color:var(--text3); margin-top:5px; display:block; }
+
+  /* ─── LESSON CARD ─── */
+  .lesson-card {
+    background: var(--card);
+    border-radius:14px;
+    margin-bottom:10px;
+    overflow:hidden;
+    border: 1px solid var(--border2);
+    backdrop-filter:blur(12px);
+    transition: border-color .2s, box-shadow .2s, transform .15s;
+    animation: cardIn .35s ease both;
+    position:relative;
+  }
+
+  @keyframes cardIn {
+    from { opacity:0; transform:translateY(14px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .lesson-card:nth-child(1){animation-delay:.05s}
+  .lesson-card:nth-child(2){animation-delay:.10s}
+  .lesson-card:nth-child(3){animation-delay:.12s}
+  .lesson-card:nth-child(4){animation-delay:.15s}
+  .lesson-card:nth-child(5){animation-delay:.18s}
+
+  .lesson-card:hover {
+    border-color: rgba(0,229,200,0.35);
+    box-shadow: 0 0 24px var(--cyan-glow);
+    transform: translateY(-2px);
+  }
+
   .lesson-card.current {
-    border-color: var(--green);
-    box-shadow: 0 0 0 1px rgba(76,217,123,.3);
-  }
-  .now-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: rgba(76,217,123,.18); color: var(--green);
-    border-radius: 6px; padding: 2px 7px; font-size: 10px; font-weight: 700;
-    margin-left: 8px; vertical-align: middle;
-  }
-  .now-dot {
-    width: 5px; height: 5px; border-radius: 50%; background: var(--green);
-    animation: pulse 1.2s ease infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; } 50% { opacity: .3; }
+    border-color: rgba(0,255,136,0.4);
+    box-shadow: 0 0 28px rgba(0,255,136,0.2), 0 0 60px rgba(0,255,136,0.08);
   }
 
-  /* ── FOOTER TIME ── */
+  /* Glowing left bar */
+  .lesson-bar {
+    position:absolute; left:0; top:0; bottom:0; width:3px;
+    border-radius:3px 0 0 3px;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+  .card-green  .lesson-bar { background:var(--green);  box-shadow:0 0 8px var(--green); }
+  .card-purple .lesson-bar { background:var(--purple); box-shadow:0 0 8px var(--purple); }
+  .card-orange .lesson-bar { background:var(--orange); box-shadow:0 0 8px var(--orange); }
+  .card-red    .lesson-bar { background:var(--red);    box-shadow:0 0 8px var(--red); }
+  .lesson-card.current .lesson-bar { background:var(--green); box-shadow:0 0 12px var(--green); }
+
+  .lesson-inner { padding:13px 14px 13px 18px; }
+
+  .lesson-top { display:flex; align-items:flex-start; gap:12px; }
+
+  .num-col { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; padding-top:2px; }
+
+  .l-num {
+    width:26px; height:26px; border-radius:8px;
+    background: var(--cyan-dim); border:1px solid var(--border);
+    color:var(--cyan); font-size:11px; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Orbitron',sans-serif;
+    box-shadow:0 0 8px var(--cyan-glow);
+  }
+  .card-green  .l-num { background:var(--green-dim);  border-color:rgba(0,255,136,0.2);  color:var(--green);  box-shadow:0 0 8px rgba(0,255,136,0.2); }
+  .card-purple .l-num { background:var(--purple-dim); border-color:rgba(167,139,250,0.2); color:var(--purple); box-shadow:0 0 8px rgba(167,139,250,0.2); }
+  .card-orange .l-num { background:var(--orange-dim); border-color:rgba(255,157,61,0.2);  color:var(--orange); box-shadow:0 0 8px rgba(255,157,61,0.2); }
+  .card-red    .l-num { background:var(--red-dim);    border-color:rgba(255,94,125,0.2);  color:var(--red);    box-shadow:0 0 8px rgba(255,94,125,0.2); }
+  .lesson-card.current .l-num { background:var(--green-dim); color:var(--green); border-color:rgba(0,255,136,0.3); }
+
+  .l-time { font-size:9px; font-weight:700; color:var(--cyan); letter-spacing:.3px; font-family:'Orbitron',sans-serif; }
+  .card-green  .l-time { color:var(--green); }
+  .card-purple .l-time { color:var(--purple); }
+  .card-orange .l-time { color:var(--orange); }
+  .card-red    .l-time { color:var(--red); }
+  .lesson-card.current .l-time { color:var(--green); }
+
+  .lesson-main { flex:1; min-width:0; }
+
+  .lesson-name { font-size:13.5px; font-weight:700; color:var(--text); line-height:1.35; margin-bottom:6px; }
+
+  .badges { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+
+  .badge {
+    font-size:9px; font-weight:800; padding:2px 8px; border-radius:6px;
+    letter-spacing:.4px; text-transform:uppercase;
+  }
+  .b-type { background:var(--cyan-dim); color:var(--cyan); border:1px solid var(--border); }
+  .b-group { background:rgba(255,255,255,0.04); color:var(--text2); border:1px solid var(--border2); }
+  .b-now { background:var(--green-dim); color:var(--green); border:1px solid rgba(0,255,136,0.2); display:flex; align-items:center; gap:4px; }
+  .now-dot { width:5px; height:5px; border-radius:50%; background:var(--green); animation:glow 1s ease infinite; }
+  @keyframes glow { 0%,100%{opacity:1;box-shadow:0 0 4px var(--green)}50%{opacity:.4;box-shadow:none} }
+
+  /* Progress */
+  .progress-wrap { margin-top:7px; }
+  .progress-track { height:3px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--cyan)); border-radius:3px; transition:width .5s ease; box-shadow:0 0 6px var(--green); }
+  .progress-label { font-size:9px; color:var(--text3); font-weight:600; margin-top:3px; letter-spacing:.3px; }
+
+  /* Details */
+  .lesson-details { display:flex; flex-direction:column; gap:5px; margin-top:9px; padding-top:9px; border-top:1px solid var(--border2); }
+  .l-detail { display:flex; align-items:flex-start; gap:8px; font-size:11px; color:var(--text2); font-weight:500; line-height:1.4; }
+  .d-ic { font-size:12px; flex-shrink:0; }
+
+  /* ─── FOOTER ─── */
   .footer {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--bg); border-top: 1px solid var(--border);
-    padding: 10px 16px 14px;
-    display: flex; align-items: center; justify-content: space-between;
+    position:fixed; bottom:0; left:0; right:0; z-index:20;
+    background: rgba(4,10,22,0.92);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    padding:10px 16px 14px;
+    display:flex; align-items:center; justify-content:space-between;
   }
-  .footer-time { font-size: 20px; font-weight: 700; color: var(--text); }
-  .footer-date { font-size: 11px; color: var(--muted); }
-  .footer-week { font-size: 12px; color: var(--muted); text-align: right; }
 
-  /* ── TRANSITIONS ── */
-  .fade-in { animation: fadeIn .2s ease; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  .footer::before {
+    content:'';
+    position:absolute; left:0; right:0; top:0; height:1px;
+    background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+    opacity:.4;
+  }
+
+  .f-time { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:700; color:var(--cyan); letter-spacing:1px; text-shadow:0 0 12px var(--cyan); }
+  .f-date { font-size:10px; color:var(--text3); font-weight:500; margin-top:2px; letter-spacing:.3px; }
+  .f-week-num { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:700; color:var(--cyan); text-align:right; text-shadow:0 0 12px var(--cyan); }
+  .f-week-lbl { font-size:10px; color:var(--text3); font-weight:500; text-align:right; margin-top:2px; letter-spacing:.3px; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
+<div class="header z1">
+  <div class="header-row">
     <div class="logo">🎓</div>
-    <div>
-      <div class="header-title">Расписание БНТУ</div>
-      <div style="font-size:11px;color:var(--muted)">ФММП · Группа 10501225</div>
+    <div class="header-info">
+      <div class="header-title">БНТУ</div>
+      <div class="header-sub">SCHEDULE · РАСПИСАНИЕ</div>
     </div>
-    <div class="week-badge" id="weekBadge">Неделя <b>?</b></div>
+    <div class="week-pill" id="weekPill">WEEK —</div>
   </div>
   <div class="week-tabs">
-    <div class="week-tab" id="wTab1" onclick="selectWeek(1)">I неделя</div>
-    <div class="week-tab" id="wTab2" onclick="selectWeek(2)">II неделя</div>
+    <button class="week-tab active" id="wTab1" onclick="selectWeek(1)">I НЕДЕЛЯ</button>
+    <button class="week-tab" id="wTab2" onclick="selectWeek(2)">II НЕДЕЛЯ</button>
   </div>
 </div>
 
-<div class="day-scroll" id="dayScroll"></div>
-<div class="content" id="content"></div>
+<div id="todayBanner" class="z1"></div>
+<div class="day-scroll z1" id="dayScroll"></div>
+<div class="content z1" id="content"></div>
 
-<div class="footer">
+<div class="footer z1">
   <div>
-    <div class="footer-time" id="footerTime">--:--</div>
-    <div class="footer-date" id="footerDate">---</div>
+    <div class="f-time" id="footerTime">--:--</div>
+    <div class="f-date" id="footerDate">-</div>
   </div>
-  <div class="footer-week" id="footerWeekInfo"></div>
+  <div>
+    <div class="f-week-num" id="footerWeekNum">—</div>
+    <div class="f-week-lbl">УЧ. НЕДЕЛЯ</div>
+  </div>
 </div>
 
 <script>
-// ── ДАННЫЕ РАСПИСАНИЯ ────────────────────────────────────────────────────────
 const SCHEDULE = {
   1: {
     0: [
@@ -243,41 +419,6 @@ const SCHEDULE = {
       {time:"09:55",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},
       {time:"11:40",name:"Математический анализ",type:"Лекция",group:"",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104"},
       {time:"13:55",name:"Инженерная графика",type:"ОИЗ",group:"",teacher:"пр. Куликова А.А.",room:"корп. 18, ауд. 402"},
-    ],
-    1: [
-      {time:"08:00",name:"Физика",type:"Лекция",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 412"},
-      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
-      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"",room:"корп. 18, ауд. 207"},
-      {time:"13:55",name:"Осн. духовно-нравств. культуры и патриотизма",type:"Лекция",group:"",teacher:"Тылецкая Н.А.",room:"корп. 18, ауд. 217"},
-    ],
-    2: [
-      {time:"08:00",name:"Осн. духовно-нравств. культуры и патриотизма",type:"Практика",group:"",teacher:"Тылецкая Н.А.",room:"корп. 18, ауд. 318"},
-      {time:"09:55",name:"Математический анализ",type:"Лекция+",group:"1/2 группы",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104 / 107"},
-      {time:"11:40",name:"Операционные системы",type:"Лекция+",group:"1/2 группы",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 104 / 107"},
-    ],
-    3: [
-      {time:"09:55",name:"Операционные системы",type:"",group:"1/2 группы",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 225"},
-      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"ст.пр. Сласси М.С.",room:"корп. 18, ауд. 213"},
-      {time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},
-      {time:"15:40",name:"Организация и функционирование ЭВМ и ПУ",type:"",group:"1/2 группы",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 210"},
-    ],
-    4: [
-      {time:"08:00",name:"Современная политэкономия",type:"Практика",group:"",teacher:"ст.пр. Зысь Т.А.",room:"корп. 18, ауд. 324"},
-      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
-      {time:"11:40",name:"Современная политэкономия",type:"Лекция",group:"",teacher:"проф. Полоник С.С.",room:"корп. 18, ауд. 312"},
-      {time:"13:55",name:"Инженерная графика",type:"ОИЗ",group:"",teacher:"пр. Куликова А.А.",room:"корп. 18, ауд. 312"},
-    ],
-    5: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция+",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507 / 107"},
-      {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция+",group:"1/2 группы",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 507 / 107"},
-    ],
-  },
-  2: {
-    0: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},
-      {time:"09:55",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},
-      {time:"11:40",name:"Физика",type:"Практика",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 301"},
-      {time:"13:55",name:"Деньги и денежные системы",type:"Лекция",group:"",teacher:"ст.пр. Самойлова М.С.",room:"корп. 18, ауд. 203"},
     ],
     1: [
       {time:"08:00",name:"Физика",type:"Лекция",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 412"},
@@ -307,175 +448,246 @@ const SCHEDULE = {
       {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция+",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507 / 107"},
       {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция+",group:"1/2 группы",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 507 / 107"},
     ],
+  },
+  2: {
+    0: [
+      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция",group:"",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 104"},
+      {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Практика",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 209"},
+      {time:"11:40",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},
+      {time:"13:55",name:"Физика",type:"Практика",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 307"},
+    ],
+    1: [
+      {time:"08:00",name:"Физика",type:"Лекция",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 412"},
+      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
+      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"",room:"корп. 18, ауд. 207"},
+      {time:"13:55",name:"Осн. духовно-нравств. культуры и патриотизма",type:"Лекция",group:"",teacher:"Тылецкая Н.А.",room:"корп. 18, ауд. 217"},
+    ],
+    2: [
+      {time:"09:55",name:"Математический анализ",type:"Лекция",group:"",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104"},
+      {time:"11:40",name:"Операционные системы",type:"Практика",group:"",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 209"},
+      {time:"13:55",name:"Физика",type:"Лаб. занятие",group:"1/2 группы",teacher:"",room:"корп. 11, ауд. 316 / 415"},
+      {time:"15:40",name:"Деньги и денежные системы",type:"Практика",group:"",teacher:"ст.пр. Самойлова М.С.",room:"корп. 18, ауд. 205"},
+    ],
+    3: [
+      {time:"09:55",name:"Операционные системы",type:"Лекция",group:"",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 225"},
+      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"ст.пр. Сласси М.С.",room:"корп. 18, ауд. 213"},
+      {time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},
+      {time:"15:40",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 210"},
+    ],
+    4: [
+      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},
+      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
+      {time:"11:40",name:"Современная политэкономия",type:"Практика",group:"",teacher:"асс. Зысь Т.А.",room:"корп. 18, ауд. 312"},
+      {time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 324"},
+    ],
+    5: [
+      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция",group:"",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507"},
+      {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Практика",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 209"},
+    ],
   }
 };
 
-const DAYS      = ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
-const DAYS_S    = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
-const START     = new Date("2026-01-19T00:00:00+03:00");
-const PAIR_DUR  = 95; // минут
+const DAYS   = ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
+const DAYS_S = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+const START  = new Date("2026-01-19T00:00:00+03:00");
+const PAIR_DUR = 95;
 
-// ── Текущая неделя ────────────────────────────────────────────────────────────
-function getWeekType(date) {
-  const msDay = 86400000;
-  const daysPassed = Math.floor((date - START) / msDay);
-  return (Math.floor(daysPassed / 7) % 2) + 1;
+function getWeekType(d) {
+  return (Math.floor(Math.floor((d - START) / 86400000) / 7) % 2) + 1;
 }
 
-// ── Иконка предмета ───────────────────────────────────────────────────────────
-function lessonIcon(name) {
-  const n = name.toLowerCase();
-  if (n.includes("физическ культ") || n.includes("физкультур")) return {e:"🏃", c:"green-bg"};
-  if (n.includes("иностранный") || n.includes("язык"))          return {e:"🌐", c:""};
-  if (n.includes("математик"))                                   return {e:"📐", c:"purple-bg"};
-  if (n.includes("физика"))                                      return {e:"⚗️", c:""};
-  if (n.includes("операционн"))                                  return {e:"💻", c:""};
-  if (n.includes("алгоритмизац"))                                return {e:"🖥️", c:""};
-  if (n.includes("эвм") || n.includes("орг") && n.includes("функц")) return {e:"📟", c:"orange-bg"};
-  if (n.includes("политэкон"))                                   return {e:"💰", c:"orange-bg"};
-  if (n.includes("деньги"))                                      return {e:"💵", c:"orange-bg"};
-  if (n.includes("инженерн"))                                    return {e:"📏", c:""};
-  if (n.includes("духовн") || n.includes("нравств"))             return {e:"🕊️", c:"red-bg"};
-  return {e:"📚", c:""};
+function cardColor(n) {
+  n = n.toLowerCase();
+  if (n.includes("физическ") && n.includes("культ")) return "card-green";
+  if (n.includes("математик") || n.includes("анализ")) return "card-purple";
+  if (n.includes("политэкон") || n.includes("деньги") || (n.includes("орг") && n.includes("функц"))) return "card-orange";
+  if (n.includes("духовн") || n.includes("нравств")) return "card-red";
+  return "";
 }
 
-// ── Состояние ─────────────────────────────────────────────────────────────────
-let now       = new Date();
-let curWeek   = getWeekType(now);
-let curDay    = now.getDay() === 0 ? 0 : now.getDay() - 1; // 0=пн
+function lessonEmoji(n) {
+  n = n.toLowerCase();
+  if (n.includes("физическ") && n.includes("культ")) return "🏃";
+  if (n.includes("иностранный") || n.includes("язык")) return "🌐";
+  if (n.includes("математик")) return "📐";
+  if (n.includes("физика")) return "⚗️";
+  if (n.includes("операционн")) return "💻";
+  if (n.includes("алгоритмизац")) return "🖥️";
+  if (n.includes("эвм") || (n.includes("орг") && n.includes("функц"))) return "📟";
+  if (n.includes("политэкон") || n.includes("деньги")) return "💰";
+  if (n.includes("инженерн")) return "📏";
+  if (n.includes("духовн") || n.includes("нравств")) return "🕊️";
+  return "📚";
+}
+
+let now = new Date();
+let curWeek = getWeekType(now);
+let curDay  = now.getDay() === 0 ? 6 : now.getDay() - 1;
 if (curDay > 5) curDay = 0;
-let selWeek   = curWeek;
-let selDay    = curDay;
+let selWeek = curWeek, selDay = curDay;
 
-// ── Текущая пара ──────────────────────────────────────────────────────────────
-function getCurrentLesson(lessons) {
-  const h = now.getHours(), m = now.getMinutes();
-  const cur = h * 60 + m;
+function getCurLesson(lessons) {
+  const cur = now.getHours()*60 + now.getMinutes();
   for (let l of lessons) {
-    const [lh, lm] = l.time.split(":").map(Number);
-    const start = lh * 60 + lm;
-    if (cur >= start && cur < start + PAIR_DUR) return l;
+    const [lh,lm] = l.time.split(":").map(Number);
+    const s = lh*60+lm;
+    if (cur>=s && cur<s+PAIR_DUR) return {lesson:l, elapsed:cur-s};
   }
   return null;
 }
 
-// ── Рендер дней (таб) ─────────────────────────────────────────────────────────
-function renderDayTabs() {
-  const scroll = document.getElementById("dayScroll");
-  scroll.innerHTML = "";
-  for (let i = 0; i <= 5; i++) {
-    const isToday  = i === curDay && selWeek === curWeek;
-    const isActive = i === selDay;
-    const lessons  = (SCHEDULE[selWeek] || {})[i] || [];
-    const dot = lessons.length ? "" : " ·";
-    const d = document.createElement("div");
-    d.className = "day-tab" + (isActive ? " active" : "") + (isToday ? " today-mark" : "");
-    d.textContent = DAYS_S[i] + (isToday ? " ●" : "");
-    d.onclick = () => { selDay = i; render(); };
-    scroll.appendChild(d);
+function getNextLesson(lessons) {
+  const cur = now.getHours()*60 + now.getMinutes();
+  for (let l of lessons) {
+    const [lh,lm] = l.time.split(":").map(Number);
+    if (lh*60+lm > cur) return l;
   }
-  // Скролл к активному дню
-  const active = scroll.querySelector(".active");
-  if (active) active.scrollIntoView({inline:"center", behavior:"smooth"});
+  return null;
 }
 
-// ── Рендер расписания ─────────────────────────────────────────────────────────
-function renderContent() {
-  const cont = document.getElementById("content");
-  const lessons = (SCHEDULE[selWeek] || {})[selDay] || [];
-  const isToday = selDay === curDay && selWeek === curWeek;
-  const curLesson = isToday ? getCurrentLesson(lessons) : null;
+function renderBanner() {
+  const el = document.getElementById("todayBanner");
+  const isToday = selDay===curDay && selWeek===curWeek;
+  if (!isToday) { el.innerHTML=""; return; }
+  const lessons = (SCHEDULE[selWeek]||{})[selDay]||[];
+  const cr = getCurLesson(lessons);
+  const nx = getNextLesson(lessons);
+  let meta = "";
+  if (cr) meta = `🟢 Сейчас: ${cr.lesson.name.split(" ").slice(0,3).join(" ")}…`;
+  else if (nx) meta = `⏰ Следующая: ${nx.time} — ${nx.name.split(" ").slice(0,3).join(" ")}…`;
+  else if (lessons.length) meta = "✅ Все пары завершены";
+  else meta = "🎉 Пар нет — свободен!";
 
-  // Шапка дня
-  let html = `<div class="day-header">
-    <div class="day-header-dot ${isToday ? "green" : ""}"></div>
-    <div>
-      <div class="day-name">${DAYS[selDay]}${isToday ? " <span style='font-size:12px;color:var(--green);font-weight:500'>— сегодня</span>" : ""}</div>
-      <div class="day-meta">${selWeek}-я учебная неделя${lessons.length ? " · " + lessons.length + " пар" + (lessons.length===1?"а":lessons.length<5?"ы":"") : ""}</div>
+  el.innerHTML = `<div class="today-banner">
+    <div class="banner-icon">📅</div>
+    <div class="banner-text">
+      <div class="banner-label">Сегодня · Today</div>
+      <div class="banner-day">${DAYS[selDay]}</div>
+      <div class="banner-meta">${meta}</div>
     </div>
+    <div class="banner-clock-wrap">
+      <div class="banner-clock" id="bannerClock">--:--</div>
+      <div class="banner-date" id="bannerDate">-</div>
+    </div>
+  </div>`;
+  updateBannerTime();
+}
+
+function updateBannerTime() {
+  const c=document.getElementById("bannerClock"), d=document.getElementById("bannerDate");
+  if(!c) return;
+  c.textContent = String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+  const dn=["ВС","ПН","ВТ","СР","ЧТ","ПТ","СБ"];
+  const mn=["ЯНВ","ФЕВ","МАР","АПР","МАЙ","ИЮН","ИЮЛ","АВГ","СЕН","ОКТ","НОЯ","ДЕК"];
+  d.textContent = dn[now.getDay()]+" "+now.getDate()+" "+mn[now.getMonth()];
+}
+
+function renderDayTabs() {
+  const sc = document.getElementById("dayScroll"); sc.innerHTML="";
+  for (let i=0;i<=5;i++) {
+    const iT=i===curDay&&selWeek===curWeek, iA=i===selDay;
+    const b=document.createElement("button");
+    b.className="day-tab"+(iA?" active":"")+(iT?" today-mark":"");
+    b.textContent=DAYS_S[i]+(iT?" ·":"");
+    b.onclick=()=>{selDay=i;render();};
+    sc.appendChild(b);
+  }
+  const a=sc.querySelector(".active");
+  if(a) setTimeout(()=>a.scrollIntoView({inline:"center",behavior:"smooth"}),100);
+}
+
+function renderContent() {
+  const cont=document.getElementById("content");
+  const lessons=(SCHEDULE[selWeek]||{})[selDay]||[];
+  const isToday=selDay===curDay&&selWeek===curWeek;
+  const cr=isToday?getCurLesson(lessons):null;
+  const curL=cr?cr.lesson:null;
+
+  let h=`<div class="section-head">
+    <div class="sh-line"></div>
+    <div class="sh-label">${DAYS[selDay]} · ${selWeek}-Я НЕДЕЛЯ</div>
+    ${lessons.length?`<div class="sh-count">${lessons.length} ПАР${lessons.length===1?"А":lessons.length<5?"Ы":""}</div>`:""}
+    <div class="sh-line"></div>
   </div>`;
 
   if (!lessons.length) {
-    html += `<div class="no-lessons fade-in">
-      <div class="emoji">🎉</div>
-      <p>Пар нет — отдыхаем!</p>
-    </div>`;
+    h+=`<div class="empty"><div class="big">🎉</div><p>Пар нет — отдыхаем!</p><small>Используй время продуктивно</small></div>`;
   } else {
-    lessons.forEach((l, i) => {
-      const {e, c} = lessonIcon(l.name);
-      const isCur  = curLesson === l;
-      const meta   = [l.type, l.group].filter(Boolean).join("  ·  ");
-      const teacherLines = l.teacher ? l.teacher.split("\n") : [];
-      let bottomHTML = "";
-      if (teacherLines.length) {
-        bottomHTML += teacherLines.map(t =>
-          `<div class="lesson-detail"><span class="d-icon">👤</span><span>${t.replace(/^[👤\s]+/,"")}</span></div>`
-        ).join("");
-      }
-      if (l.room) {
-        bottomHTML += `<div class="lesson-detail"><span class="d-icon">🏫</span><span>${l.room}</span></div>`;
+    lessons.forEach((l,i)=>{
+      const isCur=curL===l;
+      const cc=cardColor(l.name);
+      const em=lessonEmoji(l.name);
+      const meta=[l.type,l.group].filter(Boolean).join(" · ");
+      const tls=l.teacher?l.teacher.split("\n"):[];
+
+      let det="";
+      if(tls.length||l.room){
+        det=`<div class="lesson-details">`;
+        tls.forEach(t=>{det+=`<div class="l-detail"><span class="d-ic">👤</span><span>${t}</span></div>`;});
+        if(l.room)det+=`<div class="l-detail"><span class="d-ic">📍</span><span>${l.room}</span></div>`;
+        det+=`</div>`;
       }
 
-      html += `<div class="lesson-card${isCur ? " current" : ""} fade-in">
-        <div class="lesson-top">
-          <div class="lesson-icon-wrap">
-            <div class="lesson-icon ${c}">${e}</div>
-            <div class="lesson-num">${i+1}</div>
+      let prog="";
+      if(isCur){
+        const pct=Math.min(100,Math.round((cr.elapsed/PAIR_DUR)*100));
+        prog=`<div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="progress-label">ОСТАЛОСЬ ${PAIR_DUR-cr.elapsed} МИН · ${pct}% ПРОШЛО</div>
+        </div>`;
+      }
+
+      h+=`<div class="lesson-card ${cc}${isCur?" current":""}">
+        <div class="lesson-bar"></div>
+        <div class="lesson-inner">
+          <div class="lesson-top">
+            <div class="num-col">
+              <div class="l-num">${i+1}</div>
+              <div class="l-time">${l.time}</div>
+            </div>
+            <div class="lesson-main">
+              <div class="lesson-name">${em} ${l.name}</div>
+              <div class="badges">
+                ${meta?`<span class="badge b-type">${meta}</span>`:""}
+                ${isCur?`<span class="badge b-now"><span class="now-dot"></span>LIVE</span>`:""}
+              </div>
+              ${prog}${det}
+            </div>
           </div>
-          <div class="lesson-info">
-            <div class="lesson-name">${l.name}${isCur ? '<span class="now-badge"><span class="now-dot"></span>Идёт</span>' : ""}</div>
-            ${meta ? `<div class="lesson-type">${meta}</div>` : ""}
-          </div>
-          <div class="lesson-time">${l.time}</div>
         </div>
-        ${bottomHTML ? `<div class="lesson-divider"></div><div class="lesson-bottom">${bottomHTML}</div>` : ""}
       </div>`;
     });
   }
-
-  cont.innerHTML = html;
+  cont.innerHTML=h;
 }
 
-// ── Выбор недели ──────────────────────────────────────────────────────────────
 function selectWeek(w) {
-  selWeek = w;
-  document.getElementById("wTab1").className = "week-tab" + (w===1?" active":"");
-  document.getElementById("wTab2").className = "week-tab" + (w===2?" active":"");
+  selWeek=w; selDay=(w===curWeek)?curDay:0;
+  document.getElementById("wTab1").className="week-tab"+(w===1?" active":"");
+  document.getElementById("wTab2").className="week-tab"+(w===2?" active":"");
   render();
 }
 
-// ── Полный рендер ─────────────────────────────────────────────────────────────
-function render() {
-  renderDayTabs();
-  renderContent();
-}
+function render() { renderBanner(); renderDayTabs(); renderContent(); }
 
-// ── Часы в футере ─────────────────────────────────────────────────────────────
 function updateClock() {
-  now = new Date();
-  const h = String(now.getHours()).padStart(2,"0");
-  const m = String(now.getMinutes()).padStart(2,"0");
-  document.getElementById("footerTime").textContent = h + ":" + m;
-
-  const days = ["вс","пн","вт","ср","чт","пт","сб"];
-  const months = ["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
-  document.getElementById("footerDate").textContent =
-    days[now.getDay()] + ", " + now.getDate() + " " + months[now.getMonth()];
-
-  const wt = getWeekType(now);
-  document.getElementById("footerWeekInfo").innerHTML = `${wt}-я неделя`;
-  document.getElementById("weekBadge").innerHTML = `Неделя <b>${wt}</b>`;
+  now=new Date();
+  const h=String(now.getHours()).padStart(2,"0"), m=String(now.getMinutes()).padStart(2,"0");
+  document.getElementById("footerTime").textContent=h+":"+m;
+  const dn=["ВС","ПН","ВТ","СР","ЧТ","ПТ","СБ"];
+  const mn=["ЯНВ","ФЕВ","МАР","АПР","МАЙ","ИЮН","ИЮЛ","АВГ","СЕН","ОКТ","НОЯ","ДЕК"];
+  document.getElementById("footerDate").textContent=dn[now.getDay()]+" "+now.getDate()+" "+mn[now.getMonth()];
+  const wt=getWeekType(now);
+  document.getElementById("footerWeekNum").textContent=wt+"-Я";
+  document.getElementById("weekPill").textContent="WEEK "+wt;
+  updateBannerTime();
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
-if (window.Telegram && window.Telegram.WebApp) {
-  Telegram.WebApp.ready();
-  Telegram.WebApp.expand();
-}
+if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
 
 updateClock();
 selectWeek(selWeek);
-setInterval(updateClock, 10000);
+setInterval(()=>{ updateClock(); renderContent(); }, 10000);
 </script>
 </body>
 </html>
