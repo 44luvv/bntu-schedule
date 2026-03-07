@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -7,687 +8,385 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:       #050d1a;
-    --bg2:      #071224;
-    --bg3:      #0a1a32;
-    --card:     rgba(10,25,50,0.75);
-    --card2:    rgba(5,18,38,0.9);
-    --cyan:     #00e5c8;
-    --cyan2:    #00c4ab;
-    --cyan-dim: rgba(0,229,200,0.12);
-    --cyan-glow:rgba(0,229,200,0.25);
-    --teal:     #0affdc;
-    --text:     #e8f4f2;
-    --text2:    #7db8b0;
-    --text3:    #3d7a72;
-    --border:   rgba(0,229,200,0.15);
-    --border2:  rgba(0,229,200,0.08);
-    --green:    #00ff88;
-    --green-dim:rgba(0,255,136,0.12);
-    --orange:   #ff9d3d;
-    --orange-dim:rgba(255,157,61,0.12);
-    --purple:   #a78bfa;
-    --purple-dim:rgba(167,139,250,0.12);
-    --red:      #ff5e7d;
-    --red-dim:  rgba(255,94,125,0.12);
-  }
+:root {
+  --bg:#04090f; --card:rgba(8,20,40,0.80);
+  --c:#00edb4; --c2:#00c899; --cdim:rgba(0,237,180,0.10); --cglow:rgba(0,237,180,0.22); --cglow2:rgba(0,237,180,0.45);
+  --teal:#00c8e0;
+  --green:#00ff8c; --gdim:rgba(0,255,140,0.10); --gglow:rgba(0,255,140,0.28);
+  --purple:#b48aff; --pdim:rgba(180,138,255,0.10);
+  --orange:#ffaa3d; --odim:rgba(255,170,61,0.10);
+  --red:#ff5e7d; --rdim:rgba(255,94,125,0.10);
+  --white:#e9f5f2; --muted:#4d8a7c; --muted2:#2a5a50;
+  --border:rgba(0,237,180,0.13); --border2:rgba(0,237,180,0.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 90% 50% at 50% -10%,rgba(0,237,180,.06) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 110% 60%,rgba(0,200,224,.04) 0%,transparent 55%),radial-gradient(ellipse 60% 40% at -10% 85%,rgba(0,237,180,.03) 0%,transparent 55%);pointer-events:none}
+body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,237,180,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,237,180,.018) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+.z{position:relative;z-index:1}
 
-  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:40;background:rgba(4,9,15,.90);backdrop-filter:blur(24px);border-bottom:1px solid var(–border);padding:13px 18px 0}
+.hrow{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.logo{width:38px;height:38px;flex-shrink:0;border-radius:11px;background:linear-gradient(135deg,var(–c) 0%,var(–teal) 100%);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 18px var(–cglow),0 0 40px var(–cdim)}
+.htitle{font-family:‘Orbitron’,sans-serif;font-size:16px;font-weight:700;letter-spacing:.3px;background:linear-gradient(90deg,#fff 20%,var(–c) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-size:10px;color:var(–muted);font-weight:500;letter-spacing:.5px;margin-top:2px;text-transform:uppercase}
+.wpill{font-family:‘Orbitron’,sans-serif;font-size:10px;font-weight:700;letter-spacing:.4px;color:var(–c);background:var(–cdim);border:1px solid var(–border);padding:5px 13px;border-radius:20px;box-shadow:0 0 14px var(–cglow);white-space:nowrap;flex-shrink:0}
+.wtabs{display:flex}
+.wtab{flex:1;padding:9px 0 10px;border:none;background:transparent;font-family:‘Exo 2’,sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;color:var(–muted2);cursor:pointer;position:relative;transition:color .2s;text-transform:uppercase}
+.wtab::after{content:’’;position:absolute;bottom:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(–c),transparent);border-radius:2px 2px 0 0;box-shadow:0 0 8px var(–c);transform:scaleX(0);transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.wtab.active{color:var(–c)}.wtab.active::after{transform:scaleX(1)}
 
-  html { scroll-behavior:smooth; }
+/* ── BANNER ── */
+#bWrap{padding:0 16px;margin-top:14px}
+.bnr{position:relative;overflow:hidden;border-radius:18px;padding:15px 16px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(0,237,180,.07) 0%,rgba(0,200,224,.04) 50%,rgba(0,237,180,.03) 100%);border:1px solid rgba(0,237,180,.30);box-shadow:0 0 40px rgba(0,237,180,.08),0 8px 32px rgba(0,0,0,.5);backdrop-filter:blur(16px);animation:bIn .5s cubic-bezier(.34,1.56,.64,1) both}
+.bnr::before{content:’’;position:absolute;top:-50px;right:-20px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(0,237,180,.12) 0%,transparent 70%);pointer-events:none}
+.bnr::after{content:’’;position:absolute;left:0;top:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,237,180,.6),transparent)}
+@keyframes bIn{from{opacity:0;transform:translateY(-12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.bicon{width:48px;height:48px;flex-shrink:0;border-radius:13px;background:var(–cdim);border:1px solid var(–border);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 18px var(–cglow)}
+.blicon{width:48px;height:48px;flex-shrink:0;border-radius:13px;background:var(–gdim);border:1px solid rgba(0,255,140,.25);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 18px var(–gglow)}
+.bbody{flex:1;min-width:0}
+.bchip{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(–c);background:var(–cdim);border:1px solid var(–border);padding:2px 8px;border-radius:6px;margin-bottom:5px}
+.bchip.live{color:var(–green);background:var(–gdim);border-color:rgba(0,255,140,.22);display:inline-flex;align-items:center;gap:5px}
+.bday{font-family:‘Orbitron’,sans-serif;font-size:16px;font-weight:700;letter-spacing:.2px;color:var(–white);line-height:1}
+.bmeta{font-size:11px;color:rgba(233,245,242,.55);font-weight:500;margin-top:4px;line-height:1.45}
+.bmeta b{color:var(–c);font-weight:700}
+.bmeta.gm b{color:var(–green)}
+.bright{flex-shrink:0;text-align:right}
+.bclock{font-family:‘Orbitron’,sans-serif;font-size:22px;font-weight:900;letter-spacing:1px;color:var(–c);text-shadow:0 0 16px var(–cglow2);line-height:1}
+.bdate{font-size:9px;color:var(–muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:4px}
+.bprog{margin-top:9px}
+.bptrack{height:2px;background:rgba(0,255,140,.12);border-radius:2px;overflow:hidden}
+.bpfill{height:100%;background:linear-gradient(90deg,var(–green),var(–c));border-radius:2px;box-shadow:0 0 6px var(–green);transition:width 1s ease}
+.bplbl{font-size:9px;color:var(–green);font-weight:700;letter-spacing:.3px;margin-top:4px}
 
-  body {
-    font-family: 'Exo 2', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-  }
+/* ── DAY TABS ── */
+.dscroll{display:flex;gap:7px;overflow-x:auto;padding:13px 16px 0;scrollbar-width:none;scroll-behavior:smooth}
+.dscroll::-webkit-scrollbar{display:none}
+.dtab{flex-shrink:0;min-width:44px;padding:7px 13px;border-radius:10px;border:1px solid var(–border2);background:rgba(8,20,40,.5);color:var(–muted);font-size:12px;font-weight:700;font-family:‘Exo 2’,sans-serif;letter-spacing:.3px;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;gap:3px}
+.dtab .dn{font-size:12px;font-weight:700}
+.dtab .dd{width:4px;height:4px;border-radius:50%;background:var(–muted2);transition:all .2s}
+.dtab.active{background:var(–cdim);border-color:rgba(0,237,180,.35);color:var(–c);box-shadow:0 0 16px var(–cglow),inset 0 0 12px rgba(0,237,180,.04)}
+.dtab.active .dd{background:var(–c);box-shadow:0 0 6px var(–c)}
+.dtab.today-mark{border-color:rgba(0,255,140,.30);color:var(–green);background:var(–gdim)}
+.dtab.today-mark .dd{background:var(–green);box-shadow:0 0 6px var(–green);animation:dp 1.5s ease infinite}
+.dtab.active.today-mark{box-shadow:0 0 16px var(–gglow);color:var(–green);border-color:rgba(0,255,140,.4)}
+@keyframes dp{0%,100%{opacity:1}50%{opacity:.3}}
+.dtab:active{transform:scale(.88)}
 
-  /* ─── ANIMATED BG ─── */
-  body::before {
-    content:'';
-    position:fixed; inset:0; z-index:0;
-    background:
-      radial-gradient(ellipse 70% 50% at 80% 20%, rgba(0,229,200,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 60% at 10% 80%, rgba(0,180,160,0.05) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,229,200,0.03) 0%, transparent 70%);
-    pointer-events:none;
-  }
+/* ── CONTENT ── */
+.content{padding:8px 16px 110px}
+.shead{display:flex;align-items:center;gap:10px;padding:16px 0 12px}
+.sline{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(–border),transparent)}
+.slbl{font-size:10px;font-weight:800;color:var(–muted);letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+.scnt{font-size:9px;font-weight:800;color:var(–c);background:var(–cdim);border:1px solid var(–border);padding:2px 9px;border-radius:10px;letter-spacing:.4px;box-shadow:0 0 8px var(–cglow)}
 
-  /* Grid lines bg */
-  body::after {
-    content:'';
-    position:fixed; inset:0; z-index:0;
-    background-image:
-      linear-gradient(rgba(0,229,200,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,200,0.03) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events:none;
-  }
+/* ── EMPTY ── */
+.empty{margin-top:8px;background:var(–card);border:1px dashed var(–border);border-radius:18px;padding:50px 20px;text-align:center;backdrop-filter:blur(10px)}
+.eemoji{font-size:52px;margin-bottom:14px;display:block;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.etitle{font-size:16px;font-weight:800;color:var(–white);margin-bottom:6px}
+.esub{font-size:12px;color:var(–muted);font-weight:500}
 
-  .z1 { position:relative; z-index:1; }
+/* ── LESSON CARD ── */
+.lcard{position:relative;background:var(–card);border-radius:15px;margin-bottom:10px;overflow:hidden;border:1px solid var(–border2);backdrop-filter:blur(14px);transition:border-color .25s,box-shadow .25s,transform .15s;animation:cIn .4s ease both}
+@keyframes cIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.lcard:nth-child(1){animation-delay:.04s}.lcard:nth-child(2){animation-delay:.08s}.lcard:nth-child(3){animation-delay:.12s}.lcard:nth-child(4){animation-delay:.16s}.lcard:nth-child(5){animation-delay:.20s}
+.lcard:hover{border-color:rgba(0,237,180,.28);box-shadow:0 0 26px rgba(0,237,180,.10),0 8px 24px rgba(0,0,0,.5);transform:translateY(-2px)}
+.lcard:active{transform:scale(.985)}
+.lcard.cur{border-color:rgba(0,255,140,.35);box-shadow:0 0 32px rgba(0,255,140,.15),0 0 80px rgba(0,255,140,.05),0 8px 32px rgba(0,0,0,.6)}
 
-  /* ─── HEADER ─── */
-  .header {
-    position:sticky; top:0; z-index:30;
-    background: rgba(5,13,26,0.88);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 16px 0;
-  }
+/* Left accent bar */
+.lbar{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(–c),var(–c2));box-shadow:0 0 10px var(–c)}
+.ccg .lbar{background:linear-gradient(180deg,var(–green),#00d070);box-shadow:0 0 10px var(–green)}
+.ccp .lbar{background:linear-gradient(180deg,var(–purple),#8a60e8);box-shadow:0 0 10px var(–purple)}
+.cco .lbar{background:linear-gradient(180deg,var(–orange),#e88820);box-shadow:0 0 10px var(–orange)}
+.ccr .lbar{background:linear-gradient(180deg,var(–red),#d83060);box-shadow:0 0 10px var(–red)}
+.lcard.cur .lbar{background:linear-gradient(180deg,var(–green),#00d070);box-shadow:0 0 14px var(–green)}
 
-  .header-row {
-    display:flex; align-items:center; gap:10px;
-    margin-bottom:12px;
-  }
+.lbody{padding:13px 14px 13px 17px}
+.ltop{display:flex;align-items:flex-start;gap:13px}
+.lnc{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;padding-top:2px}
+.lnum{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:‘Orbitron’,sans-serif;font-size:11px;font-weight:700;background:var(–cdim);color:var(–c);border:1px solid var(–border);box-shadow:0 0 10px var(–cglow)}
+.ccg .lnum{background:var(–gdim);color:var(–green);border-color:rgba(0,255,140,.18);box-shadow:0 0 10px var(–gglow)}
+.ccp .lnum{background:var(–pdim);color:var(–purple);border-color:rgba(180,138,255,.18)}
+.cco .lnum{background:var(–odim);color:var(–orange);border-color:rgba(255,170,61,.18)}
+.ccr .lnum{background:var(–rdim);color:var(–red);border-color:rgba(255,94,125,.18)}
+.lcard.cur .lnum{background:var(–gdim);color:var(–green);border-color:rgba(0,255,140,.25);box-shadow:0 0 10px var(–gglow)}
+.ltv{font-family:‘Orbitron’,sans-serif;font-size:9px;font-weight:700;color:var(–c);letter-spacing:.3px}
+.ccg .ltv{color:var(–green)}.ccp .ltv{color:var(–purple)}.cco .ltv{color:var(–orange)}.ccr .ltv{color:var(–red)}
+.lcard.cur .ltv{color:var(–green)}
+.lmain{flex:1;min-width:0}
+.lname{font-size:14px;font-weight:700;color:var(–white);line-height:1.35;margin-bottom:7px}
+.lbadges{display:flex;flex-wrap:wrap;gap:5px}
+.badge{font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:5px}
+.btype{background:var(–cdim);color:var(–c);border:1px solid var(–border)}
+.bgrp{background:rgba(255,255,255,.04);color:var(–muted);border:1px solid var(–border2)}
+.blive{background:var(–gdim);color:var(–green);border:1px solid rgba(0,255,140,.22);display:inline-flex;align-items:center;gap:4px}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(–green);box-shadow:0 0 6px var(–green);animation:lp 1.2s ease infinite}
+@keyframes lp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 
-  .logo {
-    width:36px; height:36px; flex-shrink:0;
-    background: linear-gradient(135deg, var(--cyan) 0%, #00b8a0 100%);
-    border-radius:10px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:16px;
-    box-shadow: 0 0 16px rgba(0,229,200,0.5), 0 0 40px rgba(0,229,200,0.2);
-  }
+/* Progress */
+.lprog{margin-top:10px}
+.ptrack{height:3px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(–green) 0%,var(–c) 100%);border-radius:3px;box-shadow:0 0 8px var(–green);transition:width 1s ease}
+.plbls{display:flex;justify-content:space-between;margin-top:4px}
+.plbl{font-size:9px;font-weight:700;color:var(–green);letter-spacing:.3px}
+.plblr{font-size:9px;font-weight:600;color:var(–muted);letter-spacing:.3px}
 
-  .header-info { flex:1; }
+/* Details */
+.ldiv{height:1px;margin:10px 0 8px;background:linear-gradient(90deg,transparent,var(–border),transparent)}
+.ldets{display:flex;flex-direction:column;gap:6px}
+.ldet{display:flex;align-items:flex-start;gap:9px;font-size:11.5px;color:rgba(233,245,242,.55);font-weight:500;line-height:1.45}
+.dic{font-size:13px;flex-shrink:0;opacity:.8}
 
-  .header-title {
-    font-family:'Orbitron', sans-serif;
-    font-size:15px; font-weight:700;
-    letter-spacing:.5px;
-    background: linear-gradient(90deg, var(--text) 30%, var(--cyan));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  }
-
-  .header-sub { font-size:10px; color:var(--text3); font-weight:500; margin-top:1px; letter-spacing:.3px; }
-
-  .week-pill {
-    font-family:'Orbitron', sans-serif;
-    font-size:10px; font-weight:700; letter-spacing:.5px;
-    color: var(--cyan);
-    background: var(--cyan-dim);
-    border: 1px solid var(--border);
-    padding:5px 12px; border-radius:20px;
-    box-shadow: 0 0 12px var(--cyan-glow);
-    flex-shrink:0;
-  }
-
-  /* Week tabs */
-  .week-tabs { display:flex; gap:0; }
-
-  .week-tab {
-    flex:1; padding:9px 0 10px;
-    border:none; background:transparent;
-    color:var(--text3); font-size:12px; font-weight:700;
-    cursor:pointer; position:relative;
-    transition:color .2s; font-family:'Exo 2', sans-serif;
-    letter-spacing:.3px;
-  }
-
-  .week-tab::after {
-    content:'';
-    position:absolute; bottom:0; left:25%; right:25%;
-    height:2px;
-    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-    border-radius:2px 2px 0 0;
-    transform:scaleX(0);
-    transition:transform .3s cubic-bezier(.34,1.56,.64,1);
-    box-shadow: 0 0 8px var(--cyan);
-  }
-
-  .week-tab.active { color:var(--cyan); }
-  .week-tab.active::after { transform:scaleX(1); }
-
-  /* ─── TODAY BANNER ─── */
-  #todayBanner { padding:0 16px; margin-top:12px; }
-
-  .today-banner {
-    border-radius:16px;
-    padding:16px;
-    display:flex; align-items:center; gap:14px;
-    position:relative; overflow:hidden;
-    background: linear-gradient(135deg, rgba(0,30,55,0.95) 0%, rgba(0,20,40,0.95) 100%);
-    border: 1px solid rgba(0,229,200,0.3);
-    box-shadow: 0 0 30px rgba(0,229,200,0.15), inset 0 1px 0 rgba(0,229,200,0.1);
-    animation: bannerIn .5s cubic-bezier(.34,1.56,.64,1) both;
-  }
-
-  .today-banner::before {
-    content:'';
-    position:absolute; top:-40%; right:-10%;
-    width:200px; height:200px;
-    background: radial-gradient(circle, rgba(0,229,200,0.12) 0%, transparent 70%);
-    pointer-events:none;
-  }
-
-  @keyframes bannerIn {
-    from { opacity:0; transform:translateY(-10px) scale(.97); }
-    to   { opacity:1; transform:translateY(0) scale(1); }
-  }
-
-  .banner-icon {
-    width:46px; height:46px; flex-shrink:0;
-    background: var(--cyan-dim);
-    border: 1px solid var(--border);
-    border-radius:12px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:22px;
-    box-shadow: 0 0 16px var(--cyan-glow);
-  }
-
-  .banner-text { flex:1; }
-  .banner-label { font-size:10px; font-weight:700; color:var(--cyan); letter-spacing:.8px; text-transform:uppercase; }
-  .banner-day { font-family:'Orbitron',sans-serif; font-size:17px; font-weight:700; color:var(--text); letter-spacing:.3px; margin-top:3px; }
-  .banner-meta { font-size:11px; color:var(--text2); font-weight:500; margin-top:3px; }
-
-  .banner-clock-wrap { text-align:right; flex-shrink:0; }
-  .banner-clock { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:700; color:var(--cyan); letter-spacing:1px; text-shadow:0 0 12px var(--cyan); }
-  .banner-date { font-size:10px; color:var(--text3); font-weight:500; margin-top:3px; letter-spacing:.3px; }
-
-  /* ─── DAY SCROLL ─── */
-  .day-scroll {
-    display:flex; gap:7px; overflow-x:auto;
-    padding:12px 16px 0; scrollbar-width:none; scroll-behavior:smooth;
-  }
-  .day-scroll::-webkit-scrollbar { display:none; }
-
-  .day-tab {
-    flex-shrink:0; padding:7px 14px;
-    border-radius:10px;
-    border: 1px solid var(--border2);
-    background: rgba(10,25,50,0.5);
-    color:var(--text2); font-size:12px; font-weight:700;
-    cursor:pointer; transition:all .2s;
-    font-family:'Exo 2',sans-serif; letter-spacing:.2px;
-    backdrop-filter: blur(8px);
-  }
-
-  .day-tab.active {
-    background: var(--cyan-dim);
-    border-color: var(--cyan);
-    color: var(--cyan);
-    box-shadow: 0 0 16px var(--cyan-glow), inset 0 0 12px rgba(0,229,200,0.05);
-  }
-
-  .day-tab.today-mark {
-    border-color: rgba(0,255,136,0.3);
-    color: var(--green);
-    background: var(--green-dim);
-  }
-
-  .day-tab.active.today-mark {
-    box-shadow: 0 0 16px rgba(0,255,136,0.3);
-  }
-
-  .day-tab:active { transform:scale(.9); }
-
-  /* ─── CONTENT ─── */
-  .content { padding:10px 16px 100px; }
-
-  /* Section head */
-  .section-head {
-    display:flex; align-items:center; gap:8px;
-    padding:16px 0 12px;
-  }
-  .sh-line { flex:1; height:1px; background: linear-gradient(90deg, var(--border2), var(--border), var(--border2)); }
-  .sh-label { font-size:10px; font-weight:700; color:var(--text3); letter-spacing:.8px; text-transform:uppercase; white-space:nowrap; }
-  .sh-count {
-    font-size:10px; font-weight:800; color:var(--cyan);
-    background:var(--cyan-dim); border:1px solid var(--border);
-    padding:2px 8px; border-radius:10px; letter-spacing:.3px;
-  }
-
-  /* ─── EMPTY STATE ─── */
-  .empty {
-    background: var(--card);
-    border:1px dashed var(--border);
-    border-radius:16px;
-    padding:44px 20px; text-align:center;
-    backdrop-filter:blur(8px);
-  }
-  .empty .big { font-size:44px; margin-bottom:12px; }
-  .empty p { font-size:15px; font-weight:700; color:var(--text2); }
-  .empty small { font-size:11px; color:var(--text3); margin-top:5px; display:block; }
-
-  /* ─── LESSON CARD ─── */
-  .lesson-card {
-    background: var(--card);
-    border-radius:14px;
-    margin-bottom:10px;
-    overflow:hidden;
-    border: 1px solid var(--border2);
-    backdrop-filter:blur(12px);
-    transition: border-color .2s, box-shadow .2s, transform .15s;
-    animation: cardIn .35s ease both;
-    position:relative;
-  }
-
-  @keyframes cardIn {
-    from { opacity:0; transform:translateY(14px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-  .lesson-card:nth-child(1){animation-delay:.05s}
-  .lesson-card:nth-child(2){animation-delay:.10s}
-  .lesson-card:nth-child(3){animation-delay:.12s}
-  .lesson-card:nth-child(4){animation-delay:.15s}
-  .lesson-card:nth-child(5){animation-delay:.18s}
-
-  .lesson-card:hover {
-    border-color: rgba(0,229,200,0.35);
-    box-shadow: 0 0 24px var(--cyan-glow);
-    transform: translateY(-2px);
-  }
-
-  .lesson-card.current {
-    border-color: rgba(0,255,136,0.4);
-    box-shadow: 0 0 28px rgba(0,255,136,0.2), 0 0 60px rgba(0,255,136,0.08);
-  }
-
-  /* Glowing left bar */
-  .lesson-bar {
-    position:absolute; left:0; top:0; bottom:0; width:3px;
-    border-radius:3px 0 0 3px;
-    background: var(--cyan);
-    box-shadow: 0 0 8px var(--cyan);
-  }
-  .card-green  .lesson-bar { background:var(--green);  box-shadow:0 0 8px var(--green); }
-  .card-purple .lesson-bar { background:var(--purple); box-shadow:0 0 8px var(--purple); }
-  .card-orange .lesson-bar { background:var(--orange); box-shadow:0 0 8px var(--orange); }
-  .card-red    .lesson-bar { background:var(--red);    box-shadow:0 0 8px var(--red); }
-  .lesson-card.current .lesson-bar { background:var(--green); box-shadow:0 0 12px var(--green); }
-
-  .lesson-inner { padding:13px 14px 13px 18px; }
-
-  .lesson-top { display:flex; align-items:flex-start; gap:12px; }
-
-  .num-col { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; padding-top:2px; }
-
-  .l-num {
-    width:26px; height:26px; border-radius:8px;
-    background: var(--cyan-dim); border:1px solid var(--border);
-    color:var(--cyan); font-size:11px; font-weight:800;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Orbitron',sans-serif;
-    box-shadow:0 0 8px var(--cyan-glow);
-  }
-  .card-green  .l-num { background:var(--green-dim);  border-color:rgba(0,255,136,0.2);  color:var(--green);  box-shadow:0 0 8px rgba(0,255,136,0.2); }
-  .card-purple .l-num { background:var(--purple-dim); border-color:rgba(167,139,250,0.2); color:var(--purple); box-shadow:0 0 8px rgba(167,139,250,0.2); }
-  .card-orange .l-num { background:var(--orange-dim); border-color:rgba(255,157,61,0.2);  color:var(--orange); box-shadow:0 0 8px rgba(255,157,61,0.2); }
-  .card-red    .l-num { background:var(--red-dim);    border-color:rgba(255,94,125,0.2);  color:var(--red);    box-shadow:0 0 8px rgba(255,94,125,0.2); }
-  .lesson-card.current .l-num { background:var(--green-dim); color:var(--green); border-color:rgba(0,255,136,0.3); }
-
-  .l-time { font-size:9px; font-weight:700; color:var(--cyan); letter-spacing:.3px; font-family:'Orbitron',sans-serif; }
-  .card-green  .l-time { color:var(--green); }
-  .card-purple .l-time { color:var(--purple); }
-  .card-orange .l-time { color:var(--orange); }
-  .card-red    .l-time { color:var(--red); }
-  .lesson-card.current .l-time { color:var(--green); }
-
-  .lesson-main { flex:1; min-width:0; }
-
-  .lesson-name { font-size:13.5px; font-weight:700; color:var(--text); line-height:1.35; margin-bottom:6px; }
-
-  .badges { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
-
-  .badge {
-    font-size:9px; font-weight:800; padding:2px 8px; border-radius:6px;
-    letter-spacing:.4px; text-transform:uppercase;
-  }
-  .b-type { background:var(--cyan-dim); color:var(--cyan); border:1px solid var(--border); }
-  .b-group { background:rgba(255,255,255,0.04); color:var(--text2); border:1px solid var(--border2); }
-  .b-now { background:var(--green-dim); color:var(--green); border:1px solid rgba(0,255,136,0.2); display:flex; align-items:center; gap:4px; }
-  .now-dot { width:5px; height:5px; border-radius:50%; background:var(--green); animation:glow 1s ease infinite; }
-  @keyframes glow { 0%,100%{opacity:1;box-shadow:0 0 4px var(--green)}50%{opacity:.4;box-shadow:none} }
-
-  /* Progress */
-  .progress-wrap { margin-top:7px; }
-  .progress-track { height:3px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--cyan)); border-radius:3px; transition:width .5s ease; box-shadow:0 0 6px var(--green); }
-  .progress-label { font-size:9px; color:var(--text3); font-weight:600; margin-top:3px; letter-spacing:.3px; }
-
-  /* Details */
-  .lesson-details { display:flex; flex-direction:column; gap:5px; margin-top:9px; padding-top:9px; border-top:1px solid var(--border2); }
-  .l-detail { display:flex; align-items:flex-start; gap:8px; font-size:11px; color:var(--text2); font-weight:500; line-height:1.4; }
-  .d-ic { font-size:12px; flex-shrink:0; }
-
-  /* ─── FOOTER ─── */
-  .footer {
-    position:fixed; bottom:0; left:0; right:0; z-index:20;
-    background: rgba(4,10,22,0.92);
-    backdrop-filter:blur(20px);
-    border-top:1px solid var(--border);
-    padding:10px 16px 14px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-
-  .footer::before {
-    content:'';
-    position:absolute; left:0; right:0; top:0; height:1px;
-    background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-    opacity:.4;
-  }
-
-  .f-time { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:700; color:var(--cyan); letter-spacing:1px; text-shadow:0 0 12px var(--cyan); }
-  .f-date { font-size:10px; color:var(--text3); font-weight:500; margin-top:2px; letter-spacing:.3px; }
-  .f-week-num { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:700; color:var(--cyan); text-align:right; text-shadow:0 0 12px var(--cyan); }
-  .f-week-lbl { font-size:10px; color:var(--text3); font-weight:500; text-align:right; margin-top:2px; letter-spacing:.3px; }
+/* ── FOOTER ── */
+.ftr{position:fixed;bottom:0;left:0;right:0;z-index:40;background:rgba(4,9,15,.92);backdrop-filter:blur(24px);border-top:1px solid var(–border);padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;align-items:center;justify-content:space-between}
+.ftr::before{content:’’;position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(–c),transparent);opacity:.5}
+.fl{display:flex;flex-direction:column;gap:3px}
+.ftime{font-family:‘Orbitron’,sans-serif;font-size:22px;font-weight:900;letter-spacing:1.5px;color:var(–c);line-height:1;text-shadow:0 0 18px var(–cglow2),0 0 40px var(–cglow)}
+.fdate{font-size:10px;font-weight:600;color:var(–muted);letter-spacing:.5px;text-transform:uppercase}
+.fc{flex:1;text-align:center;padding:0 10px}
+.fnlbl{font-size:8px;color:var(–muted2);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.fnval{font-size:11px;color:var(–c);font-weight:700;margin-top:2px;letter-spacing:.3px}
+.fnval.gv{color:var(–green)}
+.fr{text-align:right}
+.fwn{font-family:‘Orbitron’,sans-serif;font-size:20px;font-weight:900;letter-spacing:.5px;color:var(–c);line-height:1;text-shadow:0 0 18px var(–cglow2),0 0 40px var(–cglow)}
+.fwl{font-size:9px;font-weight:700;color:var(–muted);letter-spacing:.7px;text-transform:uppercase;margin-top:3px}
 </style>
+
 </head>
 <body>
 
-<div class="header z1">
-  <div class="header-row">
+<div class="hdr z">
+  <div class="hrow">
     <div class="logo">🎓</div>
-    <div class="header-info">
-      <div class="header-title">БНТУ</div>
-      <div class="header-sub">SCHEDULE · РАСПИСАНИЕ</div>
+    <div style="flex:1">
+      <div class="htitle">БНТУ</div>
+      <div class="hsub">Schedule · Расписание</div>
     </div>
-    <div class="week-pill" id="weekPill">WEEK —</div>
+    <div class="wpill" id="wPill">WEEK —</div>
   </div>
-  <div class="week-tabs">
-    <button class="week-tab active" id="wTab1" onclick="selectWeek(1)">I НЕДЕЛЯ</button>
-    <button class="week-tab" id="wTab2" onclick="selectWeek(2)">II НЕДЕЛЯ</button>
+  <div class="wtabs">
+    <button class="wtab active" id="wT1" onclick="selWeek(1)">I НЕДЕЛЯ</button>
+    <button class="wtab"        id="wT2" onclick="selWeek(2)">II НЕДЕЛЯ</button>
   </div>
 </div>
 
-<div id="todayBanner" class="z1"></div>
-<div class="day-scroll z1" id="dayScroll"></div>
-<div class="content z1" id="content"></div>
+<div id="bWrap" class="z"></div>
+<div class="dscroll z" id="dScroll"></div>
+<div class="content z" id="cont"></div>
 
-<div class="footer z1">
-  <div>
-    <div class="f-time" id="footerTime">--:--</div>
-    <div class="f-date" id="footerDate">-</div>
+<div class="ftr z">
+  <div class="fl">
+    <div class="ftime" id="fTime">--:--</div>
+    <div class="fdate" id="fDate">-</div>
   </div>
-  <div>
-    <div class="f-week-num" id="footerWeekNum">—</div>
-    <div class="f-week-lbl">УЧ. НЕДЕЛЯ</div>
+  <div class="fc">
+    <div class="fnlbl" id="fnLbl">-</div>
+    <div class="fnval" id="fnVal">-</div>
+  </div>
+  <div class="fr">
+    <div class="fwn" id="fWN">—</div>
+    <div class="fwl">Неделя</div>
   </div>
 </div>
 
 <script>
-const SCHEDULE = {
-  1: {
-    0: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},
-      {time:"09:55",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},
-      {time:"11:40",name:"Математический анализ",type:"Лекция",group:"",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104"},
-      {time:"13:55",name:"Инженерная графика",type:"ОИЗ",group:"",teacher:"пр. Куликова А.А.",room:"корп. 18, ауд. 402"},
-    ],
-    1: [
-      {time:"08:00",name:"Физика",type:"Лекция",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 412"},
-      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
-      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"",room:"корп. 18, ауд. 207"},
-      {time:"13:55",name:"Осн. духовно-нравств. культуры и патриотизма",type:"Лекция",group:"",teacher:"Тылецкая Н.А.",room:"корп. 18, ауд. 217"},
-    ],
-    2: [
-      {time:"09:55",name:"Математический анализ",type:"Лекция+",group:"1/2 группы",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104 / 107"},
-      {time:"11:40",name:"Операционные системы",type:"Лекция+",group:"1/2 группы",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 104 / 107"},
-      {time:"13:55",name:"Физика",type:"Лаб. занятие",group:"1/2 группы",teacher:"",room:"корп. 11, ауд. 316 / 415"},
-      {time:"15:40",name:"Деньги и денежные системы",type:"Практика",group:"",teacher:"ст.пр. Самойлова М.С.",room:"корп. 18, ауд. 205"},
-    ],
-    3: [
-      {time:"09:55",name:"Операционные системы",type:"",group:"1/2 группы",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 225"},
-      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"ст.пр. Сласси М.С.",room:"корп. 18, ауд. 213"},
-      {time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},
-      {time:"15:40",name:"Организация и функционирование ЭВМ и ПУ",type:"",group:"1/2 группы",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 210"},
-    ],
-    4: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Курсовая работа",group:"",teacher:"",room:"корп. 11, ауд. 209"},
-      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
-      {time:"11:40",name:"Современная политэкономия",type:"Лекция",group:"",teacher:"проф. Полоник С.С.",room:"корп. 18, ауд. 312"},
-      {time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 324"},
-    ],
-    5: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция+",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507 / 107"},
-      {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция+",group:"1/2 группы",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 507 / 107"},
-    ],
-  },
-  2: {
-    0: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция",group:"",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 104"},
-      {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Практика",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 209"},
-      {time:"11:40",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},
-      {time:"13:55",name:"Физика",type:"Практика",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 307"},
-    ],
-    1: [
-      {time:"08:00",name:"Физика",type:"Лекция",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 412"},
-      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
-      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"",room:"корп. 18, ауд. 207"},
-      {time:"13:55",name:"Осн. духовно-нравств. культуры и патриотизма",type:"Лекция",group:"",teacher:"Тылецкая Н.А.",room:"корп. 18, ауд. 217"},
-    ],
-    2: [
-      {time:"09:55",name:"Математический анализ",type:"Лекция",group:"",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104"},
-      {time:"11:40",name:"Операционные системы",type:"Практика",group:"",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 209"},
-      {time:"13:55",name:"Физика",type:"Лаб. занятие",group:"1/2 группы",teacher:"",room:"корп. 11, ауд. 316 / 415"},
-      {time:"15:40",name:"Деньги и денежные системы",type:"Практика",group:"",teacher:"ст.пр. Самойлова М.С.",room:"корп. 18, ауд. 205"},
-    ],
-    3: [
-      {time:"09:55",name:"Операционные системы",type:"Лекция",group:"",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 225"},
-      {time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"ст.пр. Сласси М.С.",room:"корп. 18, ауд. 213"},
-      {time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},
-      {time:"15:40",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 210"},
-    ],
-    4: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},
-      {time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},
-      {time:"11:40",name:"Современная политэкономия",type:"Практика",group:"",teacher:"асс. Зысь Т.А.",room:"корп. 18, ауд. 312"},
-      {time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 324"},
-    ],
-    5: [
-      {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция",group:"",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507"},
-      {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Практика",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 209"},
-    ],
-  }
-};
+const SCH={1:{0:[{time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},{time:"09:55",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},{time:"11:40",name:"Математический анализ",type:"Лекция",group:"",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104"},{time:"13:55",name:"Инженерная графика",type:"ОИЗ",group:"",teacher:"пр. Куликова А.А.",room:"корп. 18, ауд. 402"}],1:[{time:"08:00",name:"Физика",type:"Лекция",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 412"},{time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},{time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"",room:"корп. 18, ауд. 207"},{time:"13:55",name:"Осн. духовно-нравств. культуры и патриотизма",type:"Лекция",group:"",teacher:"Тылецкая Н.А.",room:"корп. 18, ауд. 217"}],2:[{time:"09:55",name:"Математический анализ",type:"Лекция+",group:"1/2 группы",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104 / 107"},{time:"11:40",name:"Операционные системы",type:"Лекция+",group:"1/2 группы",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 104 / 107"},{time:"13:55",name:"Физика",type:"Лаб. занятие",group:"1/2 группы",teacher:"",room:"корп. 11, ауд. 316 / 415"},{time:"15:40",name:"Деньги и денежные системы",type:"Практика",group:"",teacher:"ст.пр. Самойлова М.С.",room:"корп. 18, ауд. 205"}],3:[{time:"09:55",name:"Операционные системы",type:"",group:"1/2 группы",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 225"},{time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"ст.пр. Сласси М.С.",room:"корп. 18, ауд. 213"},{time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},{time:"15:40",name:"Организация и функционирование ЭВМ и ПУ",type:"",group:"1/2 группы",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 210"}],4:[{time:"08:00",name:"Основы алгоритмизации и программирования",type:"Курсовая работа",group:"",teacher:"",room:"корп. 11, ауд. 209"},{time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},{time:"11:40",name:"Современная политэкономия",type:"Лекция",group:"",teacher:"проф. Полоник С.С.",room:"корп. 18, ауд. 312"},{time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 324"}],5:[{time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция+",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507 / 107"},{time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция+",group:"1/2 группы",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 507 / 107"}]},2:{0:[{time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция",group:"",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 104"},{time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Практика",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 209"},{time:"11:40",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},{time:"13:55",name:"Физика",type:"Практика",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 307"}],1:[{time:"08:00",name:"Физика",type:"Лекция",group:"",teacher:"ст.пр. Степанов М.А.",room:"корп. 18, ауд. 412"},{time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},{time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"",room:"корп. 18, ауд. 207"},{time:"13:55",name:"Осн. духовно-нравств. культуры и патриотизма",type:"Лекция",group:"",teacher:"Тылецкая Н.А.",room:"корп. 18, ауд. 217"}],2:[{time:"09:55",name:"Математический анализ",type:"Лекция",group:"",teacher:"доц. Лебедева Г.И.",room:"корп. 11, ауд. 104"},{time:"11:40",name:"Операционные системы",type:"Практика",group:"",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 209"},{time:"13:55",name:"Физика",type:"Лаб. занятие",group:"1/2 группы",teacher:"",room:"корп. 11, ауд. 316 / 415"},{time:"15:40",name:"Деньги и денежные системы",type:"Практика",group:"",teacher:"ст.пр. Самойлова М.С.",room:"корп. 18, ауд. 205"}],3:[{time:"09:55",name:"Операционные системы",type:"Лекция",group:"",teacher:"доц. Бородуля А.В.",room:"корп. 11, ауд. 225"},{time:"11:40",name:"Иностранный язык",type:"Практика",group:"",teacher:"ст.пр. Сласси М.С.",room:"корп. 18, ауд. 213"},{time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 318"},{time:"15:40",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 210"}],4:[{time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лаб. занятие",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 225"},{time:"09:55",name:"Физическая культура",type:"",group:"",teacher:"1 — Бурков С.О.\n2 — Демид Е.Г.\n3 — Ермилов В.В.",room:"спортзал"},{time:"11:40",name:"Современная политэкономия",type:"Практика",group:"",teacher:"асс. Зысь Т.А.",room:"корп. 18, ауд. 312"},{time:"13:55",name:"Математический анализ",type:"Практика",group:"",teacher:"асс. Евсюк А.В.",room:"корп. 18, ауд. 324"}],5:[{time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция",group:"",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507"},{time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Практика",group:"",teacher:"Сулим П.Е.",room:"корп. 11, ауд. 209"}]}};
 
-const DAYS   = ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
-const DAYS_S = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
-const START  = new Date("2026-01-19T00:00:00+03:00");
-const PAIR_DUR = 95;
+const DAYS=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
+const DS=["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+const MOR=["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
+const MOU=["ЯНВ","ФЕВ","МАР","АПР","МАЙ","ИЮН","ИЮЛ","АВГ","СЕН","ОКТ","НОЯ","ДЕК"];
+const WDU=["ВС","ПН","ВТ","СР","ЧТ","ПТ","СБ"];
+const START=new Date("2026-01-19T00:00:00+03:00");
+const PD=95;
 
-function getWeekType(d) {
-  return (Math.floor(Math.floor((d - START) / 86400000) / 7) % 2) + 1;
+let now=new Date();
+let cW=gwk(now);
+let cD=now.getDay()===0?6:now.getDay()-1;
+if(cD>5)cD=0;
+let sW=cW,sD=cD;
+
+function gwk(d){return(Math.floor(Math.floor((d-START)/86400000)/7)%2)+1}
+function tm(t){const[h,m]=t.split(":").map(Number);return h*60+m}
+function pad(n){return String(n).padStart(2,"0")}
+function m2s(m){return m>=60?`${Math.floor(m/60)}ч ${m%60}мин`:`${m} мин`}
+
+function getCur(ls){
+  const c=now.getHours()*60+now.getMinutes();
+  for(const l of ls){const s=tm(l.time);if(c>=s&&c<s+PD)return{l,elapsed:c-s,left:PD-(c-s)}}
+  return null;
 }
-
-function cardColor(n) {
-  n = n.toLowerCase();
-  if (n.includes("физическ") && n.includes("культ")) return "card-green";
-  if (n.includes("математик") || n.includes("анализ")) return "card-purple";
-  if (n.includes("политэкон") || n.includes("деньги") || (n.includes("орг") && n.includes("функц"))) return "card-orange";
-  if (n.includes("духовн") || n.includes("нравств")) return "card-red";
-  return "";
-}
-
-function lessonEmoji(n) {
-  n = n.toLowerCase();
-  if (n.includes("физическ") && n.includes("культ")) return "🏃";
-  if (n.includes("иностранный") || n.includes("язык")) return "🌐";
-  if (n.includes("математик")) return "📐";
-  if (n.includes("физика")) return "⚗️";
-  if (n.includes("операционн")) return "💻";
-  if (n.includes("алгоритмизац")) return "🖥️";
-  if (n.includes("эвм") || (n.includes("орг") && n.includes("функц"))) return "📟";
-  if (n.includes("политэкон") || n.includes("деньги")) return "💰";
-  if (n.includes("инженерн")) return "📏";
-  if (n.includes("духовн") || n.includes("нравств")) return "🕊️";
-  return "📚";
-}
-
-let now = new Date();
-let curWeek = getWeekType(now);
-let curDay  = now.getDay() === 0 ? 6 : now.getDay() - 1;
-if (curDay > 5) curDay = 0;
-let selWeek = curWeek, selDay = curDay;
-
-function getCurLesson(lessons) {
-  const cur = now.getHours()*60 + now.getMinutes();
-  for (let l of lessons) {
-    const [lh,lm] = l.time.split(":").map(Number);
-    const s = lh*60+lm;
-    if (cur>=s && cur<s+PAIR_DUR) return {lesson:l, elapsed:cur-s};
-  }
+function getNxt(ls){
+  const c=now.getHours()*60+now.getMinutes();
+  for(const l of ls){if(tm(l.time)>c)return l}
   return null;
 }
 
-function getNextLesson(lessons) {
-  const cur = now.getHours()*60 + now.getMinutes();
-  for (let l of lessons) {
-    const [lh,lm] = l.time.split(":").map(Number);
-    if (lh*60+lm > cur) return l;
+function cc(n){
+  const s=n.toLowerCase();
+  if(s.includes("физическ")&&s.includes("культ"))return"ccg";
+  if(s.includes("математик")||s.includes("анализ"))return"ccp";
+  if(s.includes("политэкон")||s.includes("деньги")||(s.includes("орг")&&s.includes("функц")))return"cco";
+  if(s.includes("духовн")||s.includes("нравств"))return"ccr";
+  return"";
+}
+function em(n){
+  const s=n.toLowerCase();
+  if(s.includes("физическ")&&s.includes("культ"))return"🏃";
+  if(s.includes("иностранный")||s.includes("язык"))return"🌐";
+  if(s.includes("математик"))return"📐";
+  if(s.includes("физика"))return"⚗️";
+  if(s.includes("операционн"))return"💻";
+  if(s.includes("алгоритмизац"))return"🖥️";
+  if(s.includes("эвм")||(s.includes("орг")&&s.includes("функц")))return"📟";
+  if(s.includes("политэкон")||s.includes("деньги"))return"💰";
+  if(s.includes("инженерн"))return"📏";
+  if(s.includes("духовн"))return"🕊️";
+  return"📚";
+}
+
+/* ── BANNER ── */
+function rBanner(){
+  const w=document.getElementById("bWrap");
+  if(sD!==cD||sW!==cW){w.innerHTML="";return}
+  const ls=(SCH[sW]||{})[sD]||[];
+  const cr=getCur(ls),nx=getNxt(ls);
+  let iconCls="bicon",chipH="",metaH="",progH="";
+
+  if(cr){
+    iconCls="blicon";
+    const pct=Math.min(100,Math.round((cr.elapsed/PD)*100));
+    chipH=`<div class="bchip live"><span class="ldot"></span>LIVE NOW</div>`;
+    metaH=`<div class="bmeta gm">${em(cr.l.name)} <b>${cr.l.name.split(" ").slice(0,4).join(" ")}…</b><br>Осталось: <b>${m2s(cr.left)}</b></div>`;
+    progH=`<div class="bprog"><div class="bptrack"><div class="bpfill" id="bpf" style="width:${pct}%"></div></div><div class="bplbl" id="bpl">${pct}% прошло · ${m2s(cr.left)} осталось</div></div>`;
+  } else if(nx){
+    const ml=tm(nx.time)-(now.getHours()*60+now.getMinutes());
+    chipH=`<div class="bchip">Сегодня</div>`;
+    metaH=`<div class="bmeta">⏰ В <b>${nx.time}</b> — ${nx.name.split(" ").slice(0,3).join(" ")}…<br>Через <b>${m2s(ml)}</b></div>`;
+  } else if(ls.length){
+    chipH=`<div class="bchip">Сегодня</div>`;
+    metaH=`<div class="bmeta">✅ Все пары завершены</div>`;
+  } else {
+    chipH=`<div class="bchip">Сегодня</div>`;
+    metaH=`<div class="bmeta">🎉 Пар нет — свободен!</div>`;
   }
-  return null;
+
+  w.innerHTML=`<div class="bnr"><div class="${iconCls}">📅</div><div class="bbody">${chipH}<div class="bday">${DAYS[sD]}</div>${metaH}${progH}</div><div class="bright"><div class="bclock" id="bClk">--:--</div><div class="bdate" id="bDt">-</div></div></div>`;
+  uBT();
 }
 
-function renderBanner() {
-  const el = document.getElementById("todayBanner");
-  const isToday = selDay===curDay && selWeek===curWeek;
-  if (!isToday) { el.innerHTML=""; return; }
-  const lessons = (SCHEDULE[selWeek]||{})[selDay]||[];
-  const cr = getCurLesson(lessons);
-  const nx = getNextLesson(lessons);
-  let meta = "";
-  if (cr) meta = `🟢 Сейчас: ${cr.lesson.name.split(" ").slice(0,3).join(" ")}…`;
-  else if (nx) meta = `⏰ Следующая: ${nx.time} — ${nx.name.split(" ").slice(0,3).join(" ")}…`;
-  else if (lessons.length) meta = "✅ Все пары завершены";
-  else meta = "🎉 Пар нет — свободен!";
-
-  el.innerHTML = `<div class="today-banner">
-    <div class="banner-icon">📅</div>
-    <div class="banner-text">
-      <div class="banner-label">Сегодня · Today</div>
-      <div class="banner-day">${DAYS[selDay]}</div>
-      <div class="banner-meta">${meta}</div>
-    </div>
-    <div class="banner-clock-wrap">
-      <div class="banner-clock" id="bannerClock">--:--</div>
-      <div class="banner-date" id="bannerDate">-</div>
-    </div>
-  </div>`;
-  updateBannerTime();
+function uBT(){
+  const c=document.getElementById("bClk"),d=document.getElementById("bDt");
+  if(!c)return;
+  c.textContent=pad(now.getHours())+":"+pad(now.getMinutes());
+  d.textContent=WDU[now.getDay()]+" "+now.getDate()+" "+MOU[now.getMonth()];
 }
 
-function updateBannerTime() {
-  const c=document.getElementById("bannerClock"), d=document.getElementById("bannerDate");
-  if(!c) return;
-  c.textContent = String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
-  const dn=["ВС","ПН","ВТ","СР","ЧТ","ПТ","СБ"];
-  const mn=["ЯНВ","ФЕВ","МАР","АПР","МАЙ","ИЮН","ИЮЛ","АВГ","СЕН","ОКТ","НОЯ","ДЕК"];
-  d.textContent = dn[now.getDay()]+" "+now.getDate()+" "+mn[now.getMonth()];
-}
-
-function renderDayTabs() {
-  const sc = document.getElementById("dayScroll"); sc.innerHTML="";
-  for (let i=0;i<=5;i++) {
-    const iT=i===curDay&&selWeek===curWeek, iA=i===selDay;
+/* ── DAY TABS ── */
+function rDays(){
+  const sc=document.getElementById("dScroll");sc.innerHTML="";
+  for(let i=0;i<=5;i++){
+    const iT=i===cD&&sW===cW,iA=i===sD;
     const b=document.createElement("button");
-    b.className="day-tab"+(iA?" active":"")+(iT?" today-mark":"");
-    b.textContent=DAYS_S[i]+(iT?" ·":"");
-    b.onclick=()=>{selDay=i;render();};
+    b.className="dtab"+(iA?" active":"")+(iT?" today-mark":"");
+    b.innerHTML=`<span class="dn">${DS[i]}</span><span class="dd"></span>`;
+    b.onclick=()=>{sD=i;render()};
     sc.appendChild(b);
   }
   const a=sc.querySelector(".active");
-  if(a) setTimeout(()=>a.scrollIntoView({inline:"center",behavior:"smooth"}),100);
+  if(a)setTimeout(()=>a.scrollIntoView({inline:"center",behavior:"smooth"}),80);
 }
 
-function renderContent() {
-  const cont=document.getElementById("content");
-  const lessons=(SCHEDULE[selWeek]||{})[selDay]||[];
-  const isToday=selDay===curDay&&selWeek===curWeek;
-  const cr=isToday?getCurLesson(lessons):null;
-  const curL=cr?cr.lesson:null;
+/* ── CONTENT ── */
+function rCont(){
+  const cont=document.getElementById("cont");
+  const ls=(SCH[sW]||{})[sD]||[];
+  const isT=sD===cD&&sW===cW;
+  const cr=isT?getCur(ls):null;
+  const curL=cr?cr.l:null;
+  const pl=n=>n===1?"пара":n<5?"пары":"пар";
 
-  let h=`<div class="section-head">
-    <div class="sh-line"></div>
-    <div class="sh-label">${DAYS[selDay]} · ${selWeek}-Я НЕДЕЛЯ</div>
-    ${lessons.length?`<div class="sh-count">${lessons.length} ПАР${lessons.length===1?"А":lessons.length<5?"Ы":""}</div>`:""}
-    <div class="sh-line"></div>
-  </div>`;
+  let h=`<div class="shead"><div class="sline"></div><div class="slbl">${DAYS[sD]} · ${sW}-я неделя</div>${ls.length?`<div class="scnt">${ls.length} ${pl(ls.length)}</div>`:""}<div class="sline"></div></div>`;
 
-  if (!lessons.length) {
-    h+=`<div class="empty"><div class="big">🎉</div><p>Пар нет — отдыхаем!</p><small>Используй время продуктивно</small></div>`;
+  if(!ls.length){
+    h+=`<div class="empty"><span class="eemoji">🎉</span><div class="etitle">Пар нет — отдыхаем!</div><div class="esub">Используй время продуктивно</div></div>`;
   } else {
-    lessons.forEach((l,i)=>{
-      const isCur=curL===l;
-      const cc=cardColor(l.name);
-      const em=lessonEmoji(l.name);
-      const meta=[l.type,l.group].filter(Boolean).join(" · ");
+    ls.forEach((l,i)=>{
+      const iC=curL===l,cls=cc(l.name),meta=[l.type,l.group].filter(Boolean).join(" · ");
       const tls=l.teacher?l.teacher.split("\n"):[];
 
-      let det="";
+      let progH="";
+      if(iC){
+        const pct=Math.min(100,Math.round((cr.elapsed/PD)*100));
+        progH=`<div class="lprog"><div class="ptrack"><div class="pfill" style="width:${pct}%"></div></div><div class="plbls"><span class="plbl">${pct}% прошло</span><span class="plblr">осталось ${m2s(cr.left)}</span></div></div>`;
+      }
+
+      let detH="";
       if(tls.length||l.room){
-        det=`<div class="lesson-details">`;
-        tls.forEach(t=>{det+=`<div class="l-detail"><span class="d-ic">👤</span><span>${t}</span></div>`;});
-        if(l.room)det+=`<div class="l-detail"><span class="d-ic">📍</span><span>${l.room}</span></div>`;
-        det+=`</div>`;
+        const rows=[...tls.map(t=>`<div class="ldet"><span class="dic">👤</span><span>${t}</span></div>`),l.room?`<div class="ldet"><span class="dic">📍</span><span>${l.room}</span></div>`:""].join("");
+        detH=`<div class="ldiv"></div><div class="ldets">${rows}</div>`;
       }
 
-      let prog="";
-      if(isCur){
-        const pct=Math.min(100,Math.round((cr.elapsed/PAIR_DUR)*100));
-        prog=`<div class="progress-wrap">
-          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-          <div class="progress-label">ОСТАЛОСЬ ${PAIR_DUR-cr.elapsed} МИН · ${pct}% ПРОШЛО</div>
-        </div>`;
-      }
-
-      h+=`<div class="lesson-card ${cc}${isCur?" current":""}">
-        <div class="lesson-bar"></div>
-        <div class="lesson-inner">
-          <div class="lesson-top">
-            <div class="num-col">
-              <div class="l-num">${i+1}</div>
-              <div class="l-time">${l.time}</div>
-            </div>
-            <div class="lesson-main">
-              <div class="lesson-name">${em} ${l.name}</div>
-              <div class="badges">
-                ${meta?`<span class="badge b-type">${meta}</span>`:""}
-                ${isCur?`<span class="badge b-now"><span class="now-dot"></span>LIVE</span>`:""}
-              </div>
-              ${prog}${det}
-            </div>
-          </div>
-        </div>
-      </div>`;
+      h+=`<div class="lcard ${cls}${iC?" cur":""}"><div class="lbar"></div><div class="lbody"><div class="ltop"><div class="lnc"><div class="lnum">${i+1}</div><div class="ltv">${l.time}</div></div><div class="lmain"><div class="lname">${em(l.name)} ${l.name}</div><div class="lbadges">${meta?`<span class="badge btype">${meta}</span>`:""} ${iC?`<span class="badge blive"><span class="ldot"></span>LIVE</span>`:""}</div>${progH}${detH}</div></div></div></div>`;
     });
   }
   cont.innerHTML=h;
 }
 
-function selectWeek(w) {
-  selWeek=w; selDay=(w===curWeek)?curDay:0;
-  document.getElementById("wTab1").className="week-tab"+(w===1?" active":"");
-  document.getElementById("wTab2").className="week-tab"+(w===2?" active":"");
+/* ── FOOTER STATUS ── */
+function rFtrStatus(){
+  const ll=document.getElementById("fnLbl"),lv=document.getElementById("fnVal");
+  if(!ll)return;
+  const ls=(SCH[cW]||{})[cD]||[];
+  const cr=getCur(ls),nx=getNxt(ls);
+  if(cr){ll.textContent="ИДЁТ ПАРА";lv.textContent="осталось "+m2s(cr.left);lv.className="fnval gv"}
+  else if(nx){const ml=tm(nx.time)-(now.getHours()*60+now.getMinutes());ll.textContent="СЛЕДУЮЩАЯ";lv.textContent=nx.time+" · через "+m2s(ml);lv.className="fnval"}
+  else{ll.textContent="СЕГОДНЯ";lv.textContent="пары завершены";lv.className="fnval"}
+}
+
+/* ── CLOCK ── */
+function uClock(){
+  now=new Date();
+  document.getElementById("fTime").textContent=pad(now.getHours())+":"+pad(now.getMinutes());
+  document.getElementById("fDate").textContent=WDU[now.getDay()]+" · "+now.getDate()+" "+MOR[now.getMonth()];
+  const wt=gwk(now);cW=wt;
+  document.getElementById("fWN").textContent=wt+"-Я";
+  document.getElementById("wPill").textContent="WEEK "+wt;
+  uBT();
+  rFtrStatus();
+  // live progress update without full re-render
+  const bpf=document.getElementById("bpf"),bpl=document.getElementById("bpl");
+  if(bpf&&sD===cD&&sW===cW){
+    const ls=(SCH[sW]||{})[sD]||[];
+    const cr=getCur(ls);
+    if(cr){const pct=Math.min(100,Math.round((cr.elapsed/PD)*100));bpf.style.width=pct+"%";if(bpl)bpl.textContent=pct+"% прошло · "+m2s(cr.left)+" осталось"}
+  }
+}
+
+/* ── WEEK SWITCH ── */
+function selWeek(w){
+  sW=w;
+  document.getElementById("wT1").className="wtab"+(w===1?" active":"");
+  document.getElementById("wT2").className="wtab"+(w===2?" active":"");
   render();
 }
 
-function render() { renderBanner(); renderDayTabs(); renderContent(); }
+/* ── RENDER ── */
+function render(){rBanner();rDays();rCont()}
 
-function updateClock() {
-  now=new Date();
-  const h=String(now.getHours()).padStart(2,"0"), m=String(now.getMinutes()).padStart(2,"0");
-  document.getElementById("footerTime").textContent=h+":"+m;
-  const dn=["ВС","ПН","ВТ","СР","ЧТ","ПТ","СБ"];
-  const mn=["ЯНВ","ФЕВ","МАР","АПР","МАЙ","ИЮН","ИЮЛ","АВГ","СЕН","ОКТ","НОЯ","ДЕК"];
-  document.getElementById("footerDate").textContent=dn[now.getDay()]+" "+now.getDate()+" "+mn[now.getMonth()];
-  const wt=getWeekType(now);
-  document.getElementById("footerWeekNum").textContent=wt+"-Я";
-  document.getElementById("weekPill").textContent="WEEK "+wt;
-  updateBannerTime();
-}
-
-if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
-
-updateClock();
-selectWeek(selWeek);
-setInterval(()=>{ updateClock(); renderContent(); }, 10000);
+/* ── INIT ── */
+if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand()}
+uClock();
+selWeek(sW);
+setInterval(uClock,10000);
+setInterval(render,60000);
 </script>
+
 </body>
 </html>
