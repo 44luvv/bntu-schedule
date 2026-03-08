@@ -228,7 +228,8 @@ const SCH={
     5:[ // Суббота
       {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция+",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507 / 107"},
       {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция+",group:"1/2 группы",teacher:"доц. Юденков В.С.",room:"корп. 11, ауд. 507 / 107"}
-    ]
+    ],
+    6:[] // Воскресенье — пар нет
   },
   2:{ // ── НЕДЕЛЯ 2 ──
     0:[ // Понедельник
@@ -265,7 +266,8 @@ const SCH={
     5:[ // Суббота
       {time:"08:00",name:"Основы алгоритмизации и программирования",type:"Лекция+",group:"1/2 группы",teacher:"ст.пр. Самойлюкович В.В.",room:"корп. 11, ауд. 507 / 107"},
       {time:"09:55",name:"Организация и функционирование ЭВМ и ПУ",type:"Лекция+",group:"1/2 группы",teacher:"доц. Юденков В.С.",room:"корп. 11, ауд. 507 / 107"}
-    ]
+    ],
+    6:[] // Воскресенье — пар нет
   }
 };
 
@@ -279,8 +281,8 @@ const PD=95;
 
 let now=new Date();
 let cW=gwk(now);
+// Fix: map JS getDay() (0=Sun,1=Mon,...,6=Sat) to our index (0=Mon,...,5=Sat,6=Sun)
 let cD=now.getDay()===0?6:now.getDay()-1;
-if(cD>5)cD=0;
 let sW=cW,sD=cD;
 
 function gwk(d){return(Math.floor(Math.floor((d-START)/86400000)/7)%2)+1}
@@ -362,7 +364,7 @@ function uBT(){
 /* ── DAY TABS ── */
 function rDays(){
   const sc=document.getElementById("dScroll");sc.innerHTML="";
-  for(let i=0;i<=5;i++){
+  for(let i=0;i<=6;i++){
     const iT=i===cD&&sW===cW,iA=i===sD;
     const b=document.createElement("button");
     b.className="dtab"+(iA?" active":"")+(iT?" today-mark":"");
