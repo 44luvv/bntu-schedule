@@ -1,3 +1,1 @@
-# bntu-schedule
-
-AI GEN
+# bntu-schedule AI GEN
